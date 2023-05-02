@@ -13,7 +13,7 @@ class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
       title: Text(title),
       leading: Builder(
         builder: (context) => IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () => Scaffold.of(context).openDrawer(),
           )
       )
@@ -24,5 +24,5 @@ class CommonAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
