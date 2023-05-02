@@ -52,18 +52,18 @@ class _MyPageFormState extends State<MyPageForm> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text("현재 닉네임: " + _loginDataProvider.userNickname,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 25
               )),
-              SizedBox(height: large_gap),
-              Text("새 닉네임", style: TextStyle(
+              const SizedBox(height: large_gap),
+              const Text("새 닉네임", style: TextStyle(
                   fontSize: 25
               )),
-              SizedBox(
+              const SizedBox(
                 height: medium_gap,
               ),
               TextFormFieldNickname(controller: nicknameController),
-              SizedBox(height: medium_gap),
+              const SizedBox(height: medium_gap),
               TextButton(
                 onPressed: () async {
                   nicknamePass = await SpringMemberApi().nicknameCheck(modifyNickname);
@@ -74,8 +74,6 @@ class _MyPageFormState extends State<MyPageForm> {
                   } else {
                     showResultDialog(context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
                   }
-
-                  TextFormFieldNickname.nicknameFocus.unfocus();
 
                 }, child: const Text("닉네임 중복 확인"),
               ),

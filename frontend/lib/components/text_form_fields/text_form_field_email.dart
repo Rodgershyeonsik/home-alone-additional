@@ -8,7 +8,6 @@ import '../../utility/validate.dart';
 class TextFormFieldEmail extends StatefulWidget {
   const TextFormFieldEmail({Key? key, required this.controller}) : super(key: key);
   final TextEditingController controller;
-  static FocusNode emailFocus = FocusNode();
 
   @override
   State<TextFormFieldEmail> createState() => _TextFormFieldEmailState();
@@ -22,11 +21,10 @@ class _TextFormFieldEmailState extends State<TextFormFieldEmail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("이메일"),
+        const Text("이메일"),
         const SizedBox(height: small_gap,),
         TextFormField(
           controller: widget.controller,
-          focusNode: TextFormFieldEmail.emailFocus,
           validator: (value) => CheckValidate().validateEmail(value!),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           onChanged: (text) {

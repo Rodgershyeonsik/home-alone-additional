@@ -7,7 +7,7 @@ import 'package:frontend/components/text_form_fields/text_form_field_password_ch
 
 import '../../api/spring_member_api.dart';
 import '../../utility/size.dart';
-
+// TextEditingController를 쓰려면 stateful 써야 된다고 함..
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key}) : super(key: key);
 
@@ -71,7 +71,6 @@ class SignUpFormState extends State<SignUpForm> {
                   } else {
                   showResultDialog(context, "이메일 중복 확인", "중복 되는 이메일입니다.");
                 }
-                TextFormFieldEmail.emailFocus.unfocus();
 
               }, child: const Text("이메일 중복 확인"),
             ),
@@ -92,8 +91,6 @@ class SignUpFormState extends State<SignUpForm> {
                 } else {
                   showResultDialog(context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
                 }
-
-                TextFormFieldNickname.nicknameFocus.unfocus();
 
               }, child: const Text("닉네임 중복 확인"),
             ),

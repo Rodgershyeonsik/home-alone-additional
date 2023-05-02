@@ -8,7 +8,6 @@ import '../../utility/validate.dart';
 class TextFormFieldNickname extends StatefulWidget {
   const TextFormFieldNickname({Key? key, required this.controller}) : super(key: key);
   final TextEditingController controller;
-  static FocusNode nicknameFocus = FocusNode();
 
   @override
   State<TextFormFieldNickname> createState() => _TextFormFieldNicknameState();
@@ -22,10 +21,9 @@ class _TextFormFieldNicknameState extends State<TextFormFieldNickname> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("닉네임"),
+        const Text("닉네임"),
         const SizedBox(height: small_gap,),
         TextFormField(
-          focusNode: TextFormFieldNickname.nicknameFocus,
           controller: widget.controller,
           validator: (value) => CheckValidate().
           validateNickname(value!),
