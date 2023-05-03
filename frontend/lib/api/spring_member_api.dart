@@ -6,45 +6,36 @@ import 'package:http/http.dart' as http;
 import '../utility/http_uri.dart';
 
 class SpringMemberApi {
+  Future<bool> emailCheck ( String email ) async {
 
-  Future<bool?> emailCheck ( String email ) async {
-    var data = { 'email': email };
-    var body = json.encode(data);
-
-    var response = await http.post(
+    var response = await http.get(
       Uri.http(HttpUri.home, '/member/check-email/$email'),
-      headers: {"Content-Type": "application/json"},
-      body: body,
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("emailCheck 통신 확인");
       return json.decode(response.body);
     } else {
-      throw Exception("통신 실패");
+      throw Exception("emailCheck 통신 실패");
     }
 
   }
 
-  Future<bool?> nicknameCheck (String nickname) async {
-    var data = { 'nickname': nickname };
-    var body = json.encode(data);
+  Future<bool> nicknameCheck (String nickname) async {
 
-    var response = await http.post(
+    var response = await http.get(
       Uri.http(HttpUri.home, '/member/check-nickname/$nickname'),
-      headers: {"Content-Type": "application/json"},
-      body: body,
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("nicknameCheck 통신 확인");
       return json.decode(response.body);
     } else {
-      throw Exception("통신 실패");
+      throw Exception("nicknameCheck 통신 실패");
     }
   }
 
-  Future<bool?> signUp (MemberSignUpRequest request) async {
+  Future<bool> signUp (MemberSignUpRequest request) async {
     var data = { 'email': request.email, 'password': request.password, 'nickname': request.nickname };
     var body = json.encode(data);
 

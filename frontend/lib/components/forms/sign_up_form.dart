@@ -17,37 +17,37 @@ class SignUpForm extends StatefulWidget {
 
 class SignUpFormState extends State<SignUpForm> {
 
-  late String email;
+  late String _email;
   late String password;
-  late String nickname;
+  late String _nickname;
 
-  late TextEditingController emailController = TextEditingController();
-  late TextEditingController passwordController = TextEditingController();
-  late TextEditingController nicknameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
 
-  bool? emailPass;
-  bool? nicknamePass;
-  bool? signUpSuccess;
+  late bool emailPass;
+  late bool nicknamePass;
+  late bool signUpSuccess;
 
   @override
   void initState() {
-    emailController.addListener(() {
-      email = emailController.text;
+    _emailController.addListener(() {
+      _email = _emailController.text;
     });
-    passwordController.addListener(() {
-      password = passwordController.text;
+    _passwordController.addListener(() {
+      password = _passwordController.text;
     });
-    nicknameController.addListener(() {
-      nickname = nicknameController.text;
+    _nicknameController.addListener(() {
+      _nickname = _nicknameController.text;
     });
     super.initState();
   }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nicknameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _nicknameController.dispose();
     super.dispose();
   }
 
@@ -59,11 +59,12 @@ class SignUpFormState extends State<SignUpForm> {
         key: _formKey,
         child: Column(
           children: [
-            TextFormFieldEmail(controller: emailController,),
+            TextFormFieldEmail(controller: _emailController,),
             const SizedBox(height: medium_gap,),
             TextButton(
               onPressed: () async {
-                emailPass = await SpringMemberApi().emailCheck( email );
+                emailPass = await SpringMemberApi().emailCheck( _email );
+                debugPrint('입력 이메일: ' + _email);
                 debugPrint("emailPass: " + emailPass.toString());
 
                 if(emailPass == true) {
@@ -75,15 +76,15 @@ class SignUpFormState extends State<SignUpForm> {
               }, child: const Text("이메일 중복 확인"),
             ),
             const SizedBox(height: medium_gap,),
-            TextFormFieldPassword(controller: passwordController,),
+            TextFormFieldPassword(controller: _passwordController,),
             const SizedBox(height: medium_gap,),
             const TextFormFieldPasswordCheck(),
             const SizedBox(height: medium_gap,),
-            TextFormFieldNickname(controller: nicknameController,),
+            TextFormFieldNickname(controller: _nicknameController,),
             const SizedBox(height: medium_gap,),
             TextButton(
               onPressed: () async {
-                nicknamePass = await SpringMemberApi().nicknameCheck(nickname);
+                nicknamePass = await SpringMemberApi().nicknameCheck(_nickname);
                 debugPrint("nicknamePass: " + nicknamePass.toString());
 
                 if(nicknamePass == true) {
@@ -99,7 +100,7 @@ class SignUpFormState extends State<SignUpForm> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   if(emailPass == true && nicknamePass == true) {
-                    signUpSuccess = await SpringMemberApi().signUp(MemberSignUpRequest(email, password, nickname));
+                    signUpSuccess = await SpringMemberApi().signUp(MemberSignUpRequest(_email, password, _nickname));
                     if(signUpSuccess == true) {
                       Navigator.pushNamed(context, "/sign-up-complete");
                     }
