@@ -51,10 +51,10 @@ class SpringMemberApi {
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("signUp 통신 확인");
       return json.decode(response.body);
     } else {
-      throw Exception("통신 실패");
+      throw Exception("signUp 통신 실패");
     }
   }
 
