@@ -13,14 +13,6 @@ class TextFormFieldPasswordCheck extends StatefulWidget {
 
 class _TextFormFieldPasswordCheckState extends State<TextFormFieldPasswordCheck> {
 
-  FocusNode _passwordCheckFocus = FocusNode();
-
-  @override
-  void dispose() {
-    _passwordCheckFocus.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     SignUpFormState? form = context.findAncestorStateOfType<SignUpFormState>();
@@ -30,7 +22,6 @@ class _TextFormFieldPasswordCheckState extends State<TextFormFieldPasswordCheck>
         Text("비밀번호 확인"),
         const SizedBox(height: small_gap,),
         TextFormField(
-          focusNode: _passwordCheckFocus,
           obscureText: true,
           validator: (value) => value != form?.password ? "비밀번호가 일치하지 않습니다.": null,
           autovalidateMode: AutovalidateMode.onUserInteraction,
