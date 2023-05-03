@@ -19,7 +19,7 @@ public class MemberController {
     @Autowired
     private MemberService service;
 
-    @PostMapping("/check-email/{email}")
+    @GetMapping("/check-email/{email}")
     public Boolean emailValidation(@PathVariable("email") String email) {
         log.info("emailValidation(): " + email);
         log.info("result: " + service.emailValidation(email));
@@ -27,7 +27,7 @@ public class MemberController {
         return service.emailValidation(email);
     }
 
-    @PostMapping("/check-nickname/{nickname}")
+    @GetMapping("/check-nickname/{nickname}")
     public Boolean nicknameValidation(@PathVariable("nickname") String nickname) {
         log.info("nicknameValidation(): " + nickname);
         log.info("result: " + service.nicknameValidation(nickname));
