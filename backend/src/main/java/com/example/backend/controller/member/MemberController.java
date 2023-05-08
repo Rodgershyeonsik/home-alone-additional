@@ -22,7 +22,6 @@ public class MemberController {
     @GetMapping("/check-email/{email}")
     public Boolean emailValidation(@PathVariable("email") String email) {
         log.info("emailValidation(): " + email);
-        log.info("result: " + service.emailValidation(email));
 
         return service.emailValidation(email);
     }
@@ -30,7 +29,6 @@ public class MemberController {
     @GetMapping("/check-nickname/{nickname}")
     public Boolean nicknameValidation(@PathVariable("nickname") String nickname) {
         log.info("nicknameValidation(): " + nickname);
-        log.info("result: " + service.nicknameValidation(nickname));
 
         return service.nicknameValidation(nickname);
     }
