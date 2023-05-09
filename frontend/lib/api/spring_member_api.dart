@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../utility/http_uri.dart';
 
 class SpringMemberApi {
-  Future<bool> emailCheck ( String email ) async {
+  Future<bool?> emailCheck ( String email ) async {
 
     var response = await http.get(
       Uri.http(HttpUri.home, '/member/check-email/$email'),
@@ -18,10 +18,9 @@ class SpringMemberApi {
     } else {
       throw Exception("emailCheck 통신 실패");
     }
-
   }
 
-  Future<bool> nicknameCheck (String nickname) async {
+  Future<bool?> nicknameCheck (String nickname) async {
 
     var response = await http.get(
       Uri.http(HttpUri.home, '/member/check-nickname/$nickname'),
@@ -35,7 +34,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<bool> signUp (MemberSignUpRequest request) async {
+  Future<bool?> signUp (MemberSignUpRequest request) async {
     var data = { 'email': request.email, 'password': request.password, 'nickname': request.nickname };
     var body = json.encode(data);
 

@@ -25,9 +25,9 @@ class SignUpFormState extends State<SignUpForm> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
 
-  late bool emailPass;
-  late bool nicknamePass;
-  late bool signUpSuccess;
+  late bool? emailPass;
+  late bool? nicknamePass;
+  late bool? signUpSuccess;
 
   @override
   void initState() {
@@ -69,8 +69,10 @@ class SignUpFormState extends State<SignUpForm> {
 
                 if(emailPass == true) {
                   showResultDialog(context, "이메일 중복 확인", "사용 가능한 이메일입니다.");
-                  } else {
+                  } else if(emailPass == false){
                   showResultDialog(context, "이메일 중복 확인", "중복 되는 이메일입니다.");
+                } else {
+                  showResultDialog(context, "통신 오류", "통신이 원활하지 않습니다. 다시 시도해주세요");
                 }
 
               }, child: const Text("이메일 중복 확인"),
@@ -89,8 +91,10 @@ class SignUpFormState extends State<SignUpForm> {
 
                 if(nicknamePass == true) {
                   showResultDialog(context, "닉네임 중복 확인", "사용 가능한 닉네임입니다.");
-                } else {
+                } else if(nicknamePass == false) {
                   showResultDialog(context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
+                } else {
+                  showResultDialog(context, "통신 오류", "통신이 원활하지 않습니다. 다시 시도해주세요");
                 }
 
               }, child: const Text("닉네임 중복 확인"),
@@ -103,6 +107,8 @@ class SignUpFormState extends State<SignUpForm> {
                     signUpSuccess = await SpringMemberApi().signUp(MemberSignUpRequest(_email, password, _nickname));
                     if(signUpSuccess == true) {
                       Navigator.pushNamed(context, "/sign-up-complete");
+                    } else {
+                      showResultDialog(context, "통신 오류", "통신이 원활하지 않습니다. 다시 시도해주세요");
                     }
                   } else if(emailPass == true && nicknamePass != true) {
                     showResultDialog(context, "유효하지 않은 값 확인", "닉네임 중복 여부를 확인하세요!");
