@@ -9,7 +9,7 @@ import com.example.backend.repository.BoardRepository;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
 import com.example.backend.service.member.request.MemberModifyRequest;
-import com.example.backend.service.member.request.MemberRegisterRequest;
+import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.MemberSignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
 import com.example.backend.service.security.RedisService;
@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public Boolean signUp(MemberRegisterRequest request) {
+    public Boolean signUp(SignUpRequest request) {
         final Member member = request.toMember();
         memberRepository.save(member);
 

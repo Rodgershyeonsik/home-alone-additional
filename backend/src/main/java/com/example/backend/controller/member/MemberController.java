@@ -3,7 +3,7 @@ package com.example.backend.controller.member;
 import com.example.backend.service.member.MemberService;
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
 import com.example.backend.service.member.request.MemberModifyRequest;
-import com.example.backend.service.member.request.MemberRegisterRequest;
+import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.MemberSignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class MemberController {
     }
 
     @PostMapping("/sign-up")
-    public Boolean signUp(@RequestBody MemberRegisterRequest request) {
+    public Boolean signUp(@RequestBody SignUpRequest request) {
         log.info("signUp: " + request);
 
         return service.signUp(request);
