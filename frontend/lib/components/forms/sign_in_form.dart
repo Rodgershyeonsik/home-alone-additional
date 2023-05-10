@@ -19,26 +19,26 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<SignInForm> {
-  final String noEmail = "1";
-  final String passwordMiss = "2";
+  static const String noEmail = "1";
+  static const String incorrectPassword = "2";
 
-  late SignInResponse signInResponse;
+  late SignInResponse _signInResponse;
 
-  late String email;
-  late String password;
+  late String _email;
+  late String _password;
 
-  late TextEditingController emailController = TextEditingController();
-  late TextEditingController passwordController = TextEditingController();
-
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  // 뭐지? 이거 왜있음?ㅋㅋㅋ
   late LoginDataProvider _loginDataProvider;
 
   @override
   void initState() {
-    emailController.addListener(() {
-      email = emailController.text;
+    _emailController.addListener(() {
+      _email = _emailController.text;
     });
-    passwordController.addListener(() {
-      password = passwordController.text;
+    _passwordController.addListener(() {
+      _password = _passwordController.text;
     });
 
     _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
@@ -48,8 +48,8 @@ class _SignInFormState extends State<SignInForm> {
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -61,28 +61,28 @@ class _SignInFormState extends State<SignInForm> {
         key: _formKey,
         child: Column(
           children: [
-            TextFormFieldEmail(controller: emailController),
+            TextFormFieldEmail(controller: _emailController),
             const SizedBox(
               height: medium_gap,
             ),
-            TextFormFieldPassword(controller: passwordController),
+            TextFormFieldPassword(controller: _passwordController),
             const SizedBox(
               height: medium_gap,
             ),
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate() && _loginDataProvider.loginState == false) {
-                  signInResponse = await SpringMemberApi()
-                      .signIn(MemberSignInRequest(email, password));
-                  if (signInResponse.userToken.toString() == noEmail) {
+                  _signInResponse = await SpringMemberApi()
+                      .signIn(MemberSignInRequest(_email, _password));
+                  if (_signInResponse.userToken.toString() == noEmail) {
                     showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
-                  } else if (signInResponse.userToken.toString() == passwordMiss) {
+                  } else if (_signInResponse.userToken.toString() == incorrectPassword) {
                     showResultDialog(context, "로그인 실패!", "일치하지 않는 패스워드");
                   } else {
                     SecureStorage.storage.write(
                         key: 'login',
-                        value: signInResponse.userToken.toString());
-                        _loginDataProvider.setUserToken(signInResponse.userToken.toString());
+                        value: _signInResponse.userToken.toString());
+                        _loginDataProvider.setUserToken(_signInResponse.userToken.toString());
                         _loginDataProvider.isLogin();
 
                     debugPrint("userToken after signin: " + _loginDataProvider.userToken.toString());
@@ -99,17 +99,29 @@ class _SignInFormState extends State<SignInForm> {
             const SizedBox(
               height: large_gap,
             ),
-            RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                    style: TextStyle(color: Colors.black),
-                    text: '아직 회원이 아니신가요?',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.pushNamed(context, "/sign-up");
-                      }),
-              ]),
-            )
+            TextButton(
+              style: TextButton.styleFrom(
+              backgroundColor: Colors.white),
+                onPressed: (){
+                  Navigator.pushNamed(context, "/sign-up");
+                },
+                child: const Text(
+                    '아직 회원이 아니신가요?',
+                    style: TextStyle(color: Colors.black)
+                )
+            ),
+            // 이 위젯을 왜 썼더라?
+            // RichText(
+            //   text: TextSpan(children: [
+            //     TextSpan(
+            //         style: TextStyle(color: Colors.black),
+            //         text: '아직 회원이 아니신가요?',
+            //         recognizer: TapGestureRecognizer()
+            //           ..onTap = () {
+            //             Navigator.pushNamed(context, "/sign-up");
+            //           }),
+            //   ]),
+            // )
           ],
         ));
   }
