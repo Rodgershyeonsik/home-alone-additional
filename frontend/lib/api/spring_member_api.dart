@@ -57,7 +57,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<SignInResponse> signIn (MemberSignInRequest request) async {
+  Future<String?> signIn (MemberSignInRequest request) async {
     var data = { 'email': request.email, 'password': request.password };
     var body = json.encode(data);
 
@@ -72,12 +72,12 @@ class SpringMemberApi {
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("로그인 통신 확인");
       debugPrint(response.body);
 
-      return SignInResponse(response.body);
+      return response.body;
     } else {
-      throw Exception("통신 실패");
+      throw Exception("로그인 통신 실패");
     }
   }
 

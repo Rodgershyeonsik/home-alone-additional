@@ -22,15 +22,15 @@ class _SignInFormState extends State<SignInForm> {
   static const String noEmail = "1";
   static const String incorrectPassword = "2";
 
-  late SignInResponse _signInResponse;
+  String? _signInResponse;
 
   late String _email;
   late String _password;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  // 뭐지? 이거 왜있음?ㅋㅋㅋ
-  late LoginDataProvider _loginDataProvider;
+
+  // late LoginDataProvider _loginDataProvider;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _SignInFormState extends State<SignInForm> {
       _password = _passwordController.text;
     });
 
-    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
+    // _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
 
     super.initState();
   }
@@ -71,27 +71,50 @@ class _SignInFormState extends State<SignInForm> {
             ),
             TextButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate() && _loginDataProvider.loginState == false) {
-                  _signInResponse = await SpringMemberApi()
-                      .signIn(MemberSignInRequest(_email, _password));
-                  if (_signInResponse.userToken.toString() == noEmail) {
-                    showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
-                  } else if (_signInResponse.userToken.toString() == incorrectPassword) {
-                    showResultDialog(context, "로그인 실패!", "일치하지 않는 패스워드");
-                  } else {
-                    SecureStorage.storage.write(
-                        key: 'login',
-                        value: _signInResponse.userToken.toString());
-                        _loginDataProvider.setUserToken(_signInResponse.userToken.toString());
-                        _loginDataProvider.isLogin();
+                // if (_formKey.currentState!.validate() && _loginDataProvider.loginState == false) {
+                //   _signInResponse = await SpringMemberApi()
+                //       .signIn(MemberSignInRequest(_email, _password));
+                //   if (_signInResponse.userToken.toString() == noEmail) {
+                //     showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
+                //   } else if (_signInResponse.userToken.toString() == incorrectPassword) {
+                //     showResultDialog(context, "로그인 실패!", "일치하지 않는 패스워드");
+                //   } else {
+                //     SecureStorage.storage.write(
+                //         key: 'login',
+                //         value: _signInResponse.userToken.toString());
+                //         _loginDataProvider.setUserToken(_signInResponse.userToken.toString());
+                //         _loginDataProvider.isLogin();
+                //
+                //     debugPrint("userToken after signin: " + _loginDataProvider.userToken.toString());
+                //     debugPrint("loginState after signin: " + _loginDataProvider.loginState.toString());
+                //
+                //     Navigator.pushNamed(context, "/home");
+                //   }
+                // } else if (_loginDataProvider.loginState == true) {
+                //   showResultDialog(context, "로그인 실패!", "이미 로그인 중입니다.");
+                // }
+                if(!_formKey.currentState!.validate()) {
+                  showResultDialog(context, '알림', '모두 유효한 값을 입력하세요!');
+                  return;
+                }
 
-                    debugPrint("userToken after signin: " + _loginDataProvider.userToken.toString());
-                    debugPrint("loginState after signin: " + _loginDataProvider.loginState.toString());
+                _signInResponse = await SpringMemberApi().signIn(MemberSignInRequest(_email, _password));
 
-                    Navigator.pushNamed(context, "/home");
+                if(_signInResponse != null) {
+
+                  switch(_signInResponse) {
+                    case noEmail:
+                      showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
+                      break;
+                    case incorrectPassword:
+                      showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
+                      break;
+                    default:
+                      storage.write(
+                                  key: 'authToken',
+                                  value: _signInResponse);
+                              Navigator.pushNamed(context, "/home");
                   }
-                } else if (_loginDataProvider.loginState == true) {
-                  showResultDialog(context, "로그인 실패!", "이미 로그인 중입니다.");
                 }
               },
               child: const Text("로그인"),
@@ -99,29 +122,15 @@ class _SignInFormState extends State<SignInForm> {
             const SizedBox(
               height: large_gap,
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-              backgroundColor: Colors.white),
-                onPressed: (){
-                  Navigator.pushNamed(context, "/sign-up");
-                },
-                child: const Text(
-                    '아직 회원이 아니신가요?',
-                    style: TextStyle(color: Colors.black)
-                )
-            ),
-            // 이 위젯을 왜 썼더라?
-            // RichText(
-            //   text: TextSpan(children: [
-            //     TextSpan(
-            //         style: TextStyle(color: Colors.black),
-            //         text: '아직 회원이 아니신가요?',
-            //         recognizer: TapGestureRecognizer()
-            //           ..onTap = () {
-            //             Navigator.pushNamed(context, "/sign-up");
-            //           }),
-            //   ]),
-            // )
+            RichText(
+              text: TextSpan(
+                    style: const TextStyle(color: Colors.black),
+                    text: '아직 회원이 아니신가요?',
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.pushNamed(context, "/sign-up");
+                      }),
+              ),
           ],
         ));
   }
