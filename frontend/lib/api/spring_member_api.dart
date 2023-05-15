@@ -172,12 +172,6 @@ class UserDataResponse {
   }
 }
 
-class SignInResponse {
-  var userToken;
-
-  SignInResponse(this.userToken);
-}
-
 class MemberSignUpRequest {
   String email;
   String password;
