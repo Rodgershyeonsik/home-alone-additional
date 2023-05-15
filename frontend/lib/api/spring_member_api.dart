@@ -51,6 +51,8 @@ class SpringMemberApi {
 
     if (response.statusCode == 200) {
       debugPrint("signUp 통신 확인");
+      debugPrint("그냥 제이슨을 보자: " + response.body);
+
       return json.decode(response.body);
     } else {
       throw Exception("signUp 통신 실패");
