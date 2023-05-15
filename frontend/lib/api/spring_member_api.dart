@@ -63,9 +63,7 @@ class SpringMemberApi {
     var data = { 'email': request.email, 'password': request.password };
     var body = json.encode(data);
 
-    debugPrint(request.email);
-    debugPrint(request.password);
-    debugPrint(body);
+    debugPrint("signIn request: " +  body);
 
     var response = await http.post(
       Uri.http(HttpUri.home, '/member/sign-in'),
@@ -75,7 +73,7 @@ class SpringMemberApi {
 
     if (response.statusCode == 200) {
       debugPrint("로그인 통신 확인");
-      debugPrint(response.body);
+      debugPrint("signIn response: " + response.body);
 
       return response.body;
     } else {
