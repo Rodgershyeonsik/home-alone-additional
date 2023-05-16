@@ -9,19 +9,17 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Member {
     @Id
-    @Getter
     @Column(name = "member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @Getter
     @Column(nullable = false)
     private String email;
 
-    @Getter
     @Setter
     @Column(nullable = false)
     private String nickname;

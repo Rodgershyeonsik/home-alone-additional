@@ -4,7 +4,7 @@ import com.example.backend.service.member.MemberService;
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
 import com.example.backend.service.member.request.MemberModifyRequest;
 import com.example.backend.service.member.request.SignUpRequest;
-import com.example.backend.service.member.request.MemberSignInRequest;
+import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class MemberController {
     }
 
     @PostMapping("/sign-in")
-    public String signIn(@RequestBody MemberSignInRequest request) {
+    public String signIn(@RequestBody SignInRequest request) {
         log.info("signIn: " + request);
 
         return service.signIn(request);

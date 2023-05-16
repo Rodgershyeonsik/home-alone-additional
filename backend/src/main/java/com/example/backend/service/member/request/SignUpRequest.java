@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 
 public class SignUpRequest {
     private String email;

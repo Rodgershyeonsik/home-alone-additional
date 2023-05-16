@@ -1,7 +1,7 @@
 package com.example.backend;
 
 import com.example.backend.service.member.MemberService;
-import com.example.backend.service.member.request.MemberSignInRequest;
+import com.example.backend.service.member.request.SignInRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +13,8 @@ public class MemberSignInTestCase {
 
     @Test
     void memberSignInTest() {
-        MemberSignInRequest memberSignInRequest = new MemberSignInRequest("test5@gmail.com", "test5");
+        SignInRequest signInRequest = new SignInRequest("test5@gmail.com", "test5");
 
-        System.out.println("signInResult: " + service.signIn(memberSignInRequest));
+        System.out.println("signInResult: " + service.signIn(signInRequest));
     }
 }

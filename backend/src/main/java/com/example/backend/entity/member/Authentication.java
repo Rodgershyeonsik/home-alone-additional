@@ -12,14 +12,14 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "authentication_type")
 
-public class Authentication {
+public abstract class Authentication {
 
     public static final String BASIC_AUTH = "BASIC";
 
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id = null;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

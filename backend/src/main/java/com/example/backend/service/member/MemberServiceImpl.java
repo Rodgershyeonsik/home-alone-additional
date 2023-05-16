@@ -10,7 +10,7 @@ import com.example.backend.repository.MemberRepository;
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
 import com.example.backend.service.member.request.MemberModifyRequest;
 import com.example.backend.service.member.request.SignUpRequest;
-import com.example.backend.service.member.request.MemberSignInRequest;
+import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
 import com.example.backend.service.security.RedisService;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +75,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public String signIn(MemberSignInRequest request) {
+    public String signIn(SignInRequest request) {
         final String NO_EMAIL = "1";
         final String PASSWORD_MISS = "2";
 
@@ -92,7 +92,6 @@ public class MemberServiceImpl implements MemberService{
             if (!member.isRightPassword(request.getPassword())) {
                 log.info("패스워드 오류");
                 return PASSWORD_MISS;
-                // throw new RuntimeException("잘못된 패스워드 입니다.");
             }
 
             UUID userToken = UUID.randomUUID();
@@ -104,7 +103,6 @@ public class MemberServiceImpl implements MemberService{
         }
         log.info("가입된 사용자 아님");
         return NO_EMAIL;
-        // throw new RuntimeException("가입된 사용자가 아닙니다.");
     }
 
     @Override
