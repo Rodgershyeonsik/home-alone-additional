@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_email.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_password.dart';
 
 import '../../api/spring_member_api.dart';
-import '../../utility/secure_storage.dart';
 import '../../utility/size.dart';
 import '../custom_alert_dialog.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);
+  static const FlutterSecureStorage storage = FlutterSecureStorage();
 
   @override
   State<SignInForm> createState() => _SignInFormState();
@@ -82,7 +83,7 @@ class _SignInFormState extends State<SignInForm> {
                       showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
                       break;
                     default:
-                      storage.write(
+                      SignInForm.storage.write(
                                   key: 'authToken',
                                   value: _signInResponse);
                               Navigator.pushNamed(context, "/home");

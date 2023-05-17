@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/components/forms/sign_in_form.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_nickname.dart';
 import 'package:provider/provider.dart';
 
 import '../../api/spring_member_api.dart';
 import '../../utility/providers/login_data_provider.dart';
-import '../../utility/secure_storage.dart';
 import '../../utility/size.dart';
 import '../custom_alert_dialog.dart';
 
@@ -102,7 +102,7 @@ class _MyPageFormState extends State<MyPageForm> {
                           res = await SpringMemberApi().requestUnregister(_loginDataProvider.userToken);
                           if(res == true) {
                             await SpringMemberApi().requestSignOut(_loginDataProvider.userToken);
-                            await SecureStorage.storage.delete(key: 'login');
+                            await SignInForm.storage.delete(key: 'login');
                             _loginDataProvider.logOut();
                             Navigator.pushNamed(context, "/home");
                           }

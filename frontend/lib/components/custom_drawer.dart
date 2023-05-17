@@ -6,13 +6,13 @@ import 'package:frontend/utility/main_color.dart';
 import 'package:frontend/utility/providers/login_data_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../utility/secure_storage.dart';
 import 'custom_alert_dialog.dart';
 import 'forms/board_register_form.dart';
+import 'forms/sign_in_form.dart';
 
 
 class CustomDrawer extends StatefulWidget {
-  CustomDrawer({Key? key}) : super(key: key);
+  const CustomDrawer({Key? key}) : super(key: key);
 
 
   @override
@@ -21,17 +21,26 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   late LoginDataProvider _loginDataProvider;
+  bool isLogin = false;
 
   @override
   void initState() {
+    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
+
+    if(findAuthToken() != null) {
+      setState(() {
+        isLogin = true;
+      });
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: true);
+
     // debugPrint(_loginDataProvider.loginState.toString());
-          if(_loginDataProvider.loginState == true) {
+          if(isLogin) {
             return _logInDrawer(context);
           } else {
             return _logOutDrawer(context);
@@ -92,7 +101,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 title: Text("로그아웃"),
                 onTap: () async {
                   SpringMemberApi().requestSignOut(_loginDataProvider.userToken);
-                  await SecureStorage.storage.delete(key: 'login');
+                  await SignInForm.storage.delete(key: 'authToken');
+                  setState(() {
+                    isLogin = false;
+                  });
                   _loginDataProvider.logOut();
                   showResultDialog(context, "로그아웃", "로그아웃이 완료되었습니다.");
                   // 토큰 삭제 요청 api
@@ -146,6 +158,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ],
         )
     );
+  }
+
+  Future<String?> findAuthToken() async {
+    return await SignInForm.storage.read(key: 'authToken');
   }
 
   void showResultDialog(BuildContext context, String title, String alertMsg) {

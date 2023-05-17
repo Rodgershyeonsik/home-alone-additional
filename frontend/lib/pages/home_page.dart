@@ -39,13 +39,13 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      appBar: CommonAppBar(title: "HOME-ALONE"),
+      appBar: const CommonAppBar(title: "HOME-ALONE"),
       body: Consumer<BoardListProvider>(
           builder: (context, provider, widget){
             if (provider.boards != null && provider.boards.length > 0) {
               return BoardListView(boards: provider.boards, listTitle: "전체 게시글 목록",);
             }
-            return Center(
+            return const Center(
               child: Text("존재하는 게시물이 없습니다!"),
             );
           },
