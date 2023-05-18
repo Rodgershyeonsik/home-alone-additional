@@ -5,12 +5,14 @@ import com.example.backend.service.member.request.MemberModifyRequest;
 import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
+import com.example.backend.service.member.response.SignInResponse;
+
 public interface MemberService {
 
     Boolean signUp(SignUpRequest request);
     Boolean emailValidation(String email);
     Boolean nicknameValidation(String nickname);
-    String signIn(SignInRequest request);
+    SignInResponse signIn(SignInRequest request);
 
     Boolean signOut(FlutterUserTokenRequest request);
 

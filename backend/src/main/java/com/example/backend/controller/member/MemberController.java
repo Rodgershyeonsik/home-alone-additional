@@ -6,6 +6,7 @@ import com.example.backend.service.member.request.MemberModifyRequest;
 import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
+import com.example.backend.service.member.response.SignInResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/sign-in")
-    public String signIn(@RequestBody SignInRequest request) {
+    public SignInResponse signIn(@RequestBody SignInRequest request) {
         log.info("signIn: " + request);
 
         return service.signIn(request);

@@ -12,6 +12,7 @@ import com.example.backend.service.member.request.MemberModifyRequest;
 import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
+import com.example.backend.service.member.response.SignInResponse;
 import com.example.backend.service.security.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,11 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public String signIn(SignInRequest request) {
-        final String NO_EMAIL = "1";
-        final String PASSWORD_MISS = "2";
+    public SignInResponse signIn(SignInRequest request) {
+        SignInResponse signInResponse = new SignInResponse();
+
+        final String EMAIL_DOES_NOT_EXIST = "email does not exist";
+        final String INCORRECT_PASSWORD = "incorrect password";
 
         String email = request.getEmail();
         Optional<Member> maybeMember = memberRepository.findByEmail(email);
@@ -91,7 +94,8 @@ public class MemberServiceImpl implements MemberService{
 
             if (!member.isRightPassword(request.getPassword())) {
                 log.info("패스워드 오류");
-                return PASSWORD_MISS;
+                signInResponse.setResult(INCORRECT_PASSWORD);
+                return signInResponse;
             }
 
             UUID userToken = UUID.randomUUID();
@@ -99,10 +103,16 @@ public class MemberServiceImpl implements MemberService{
             redisService.deleteByKey(userToken.toString());
             redisService.setKeyAndValue(userToken.toString(), member.getId());
 
-            return userToken.toString();
+            signInResponse.setResult(userToken.toString());
+            signInResponse.setEmail(member.getEmail());
+            signInResponse.setNickname(member.getNickname());
+
+            return signInResponse;
         }
         log.info("가입된 사용자 아님");
-        return NO_EMAIL;
+        signInResponse.setResult(EMAIL_DOES_NOT_EXIST);
+
+        return signInResponse;
     }
 
     @Override
