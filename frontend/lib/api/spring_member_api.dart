@@ -59,7 +59,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<String?> signIn (MemberSignInRequest request) async {
+  Future<SignInResponse> signIn (MemberSignInRequest request) async {
     var data = { 'email': request.email, 'password': request.password };
     var body = json.encode(data);
 
@@ -75,33 +75,33 @@ class SpringMemberApi {
       debugPrint("로그인 통신 확인");
       debugPrint("signIn response: " + response.body);
 
-      return response.body;
+      return SignInResponse.fromJson(json.decode(response.body));
     } else {
       throw Exception("로그인 통신 실패");
     }
   }
 
-  Future<UserDataResponse> requestUserData(String? userToken) async {
-
-    var data = { 'userToken' : userToken };
-    var body = json.encode(data);
-
-    var response = await http.post(
-        Uri.http(HttpUri.home, '/member/data-read'),
-        headers: {"Content-Type": "application/json"},
-        body: body,);
-
-    if (response.statusCode == 200) {
-      debugPrint("통신 확인");
-
-      var jsonResData = jsonDecode(utf8.decode(response.bodyBytes));
-      UserDataResponse resData = UserDataResponse.fromJson(jsonResData);
-
-      return resData;
-    } else {
-      throw Exception("통신 실패");
-    }
-  }
+  // Future<UserDataResponse> requestUserData(String? userToken) async {
+  //
+  //   var data = { 'userToken' : userToken };
+  //   var body = json.encode(data);
+  //
+  //   var response = await http.post(
+  //       Uri.http(HttpUri.home, '/member/data-read'),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: body,);
+  //
+  //   if (response.statusCode == 200) {
+  //     debugPrint("통신 확인");
+  //
+  //     var jsonResData = jsonDecode(utf8.decode(response.bodyBytes));
+  //     UserDataResponse resData = UserDataResponse.fromJson(jsonResData);
+  //
+  //     return resData;
+  //   } else {
+  //     throw Exception("통신 실패");
+  //   }
+  // }
 
   Future<bool?> requestSignOut (String? userToken) async {
     var data = { 'userToken': userToken };
@@ -158,16 +158,19 @@ class SpringMemberApi {
   }
 }
 
-class UserDataResponse {
-  String userEmail;
-  String userNickname;
+class SignInResponse {
 
-  UserDataResponse({required this.userEmail, required this.userNickname});
+  String result;
+  String email;
+  String nickname;
 
-  factory UserDataResponse.fromJson(Map<String, dynamic> json) {
-    return UserDataResponse(
-        userEmail: json["userEmail"] as String,
-        userNickname: json["userNickname"] as String
+  SignInResponse({required this.result, required this.email, required this.nickname });
+
+  factory SignInResponse.fromJson(Map<String, dynamic> json) {
+    return SignInResponse(
+      result: json["result"] as String,
+      email: json["email"] as String,
+      nickname: json["nickname"] as String
     );
   }
 }

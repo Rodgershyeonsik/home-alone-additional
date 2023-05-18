@@ -1,27 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_email.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_password.dart';
 
 import '../../api/spring_member_api.dart';
 import '../../utility/size.dart';
+import '../../utility/user_data.dart';
 import '../custom_alert_dialog.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);
-  static const FlutterSecureStorage storage = FlutterSecureStorage();
+
 
   @override
   State<SignInForm> createState() => _SignInFormState();
 }
 
 class _SignInFormState extends State<SignInForm> {
-  static const String noEmail = "1";
-  static const String incorrectPassword = "2";
+  static const String emailDoesNotExist = "email does not exist";
+  static const String incorrectPassword = "incorrect password";
 
-  String? _signInResponse;
+  late SignInResponse _signInResponse;
 
   late String _email;
   late String _password;
@@ -66,28 +66,24 @@ class _SignInFormState extends State<SignInForm> {
             ),
             TextButton(
               onPressed: () async {
-                if(!_formKey.currentState!.validate()) {
+                if (!_formKey.currentState!.validate()) {
                   showResultDialog(context, '알림', '모두 유효한 값을 입력하세요!');
                   return;
                 }
 
-                _signInResponse = await SpringMemberApi().
-                                  signIn(MemberSignInRequest(_email, _password));
+                _signInResponse = await SpringMemberApi()
+                    .signIn(MemberSignInRequest(_email, _password));
 
-                if(_signInResponse != null) {
-                  switch(_signInResponse) {
-                    case noEmail:
-                      showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
-                      break;
-                    case incorrectPassword:
-                      showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
-                      break;
-                    default:
-                      SignInForm.storage.write(
-                                  key: 'authToken',
-                                  value: _signInResponse);
-                              Navigator.pushNamed(context, "/home");
-                  }
+                switch (_signInResponse.result) {
+                  case emailDoesNotExist:
+                    showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
+                    break;
+                  case incorrectPassword:
+                    showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
+                    break;
+                  default:
+                    await UserData.writeSignInResDataToStorage(_signInResponse);
+                    Navigator.pushNamed(context, "/home");
                 }
               },
               child: const Text("로그인"),
@@ -97,13 +93,13 @@ class _SignInFormState extends State<SignInForm> {
             ),
             RichText(
               text: TextSpan(
-                    style: const TextStyle(color: Colors.black),
-                    text: '아직 회원이 아니신가요?',
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.pushNamed(context, "/sign-up");
-                      }),
-              ),
+                  style: const TextStyle(color: Colors.black),
+                  text: '아직 회원이 아니신가요?',
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.pushNamed(context, "/sign-up");
+                    }),
+            ),
           ],
         ));
   }
