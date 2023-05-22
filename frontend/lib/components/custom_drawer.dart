@@ -1,167 +1,117 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/api/spring_member_api.dart';
-import 'package:frontend/components/custom_rich_text.dart';
 import 'package:frontend/utility/main_color.dart';
-import 'package:frontend/utility/providers/login_data_provider.dart';
-import 'package:provider/provider.dart';
 
+import '../utility/user_data.dart';
 import 'custom_alert_dialog.dart';
 import 'forms/board_register_form.dart';
-import 'forms/sign_in_form.dart';
-
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key}) : super(key: key);
-
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  late LoginDataProvider _loginDataProvider;
-  bool isLogin = false;
-
-  @override
-  void initState() {
-    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
-
-    if(findAuthToken() != null) {
-      setState(() {
-        isLogin = true;
-      });
-    }
-
-    super.initState();
-  }
+  late bool isLogin;
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: UserData.setUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          UserData.authToken != null ? isLogin = true : isLogin = false;
 
-    // debugPrint(_loginDataProvider.loginState.toString());
-          if(isLogin) {
-            return _logInDrawer(context);
-          } else {
-            return _logOutDrawer(context);
-          }
-  }
-    Widget _logInDrawer(BuildContext context) {
-      return Drawer(
-          child: ListView(
-            children: [
-              UserAccountsDrawerHeader(
-                accountName: Text(_loginDataProvider.userNickname),
-                accountEmail: Text(_loginDataProvider.userEmail),
-               ),
-              ListTile(
-                title: CustomRichText(text: "홈화면 가기", route: "/home"),
+          return Drawer(
+              child: Column(
+              children: [
+                isLogin
+                  ? UserAccountsDrawerHeader(
+                      accountName: Text(UserData.nickname!),
+                      accountEmail: Text(UserData.email!))
+                  : DrawerHeader(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(context, "/sign-in"),
+                            child: const Text("로그인"),
+                          ),
+                          SizedBox(
+                            height: 80,
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                      ]),
+                  decoration: BoxDecoration(
+                    color: MainColor.mainColor
+                  ),
+                    ),
+                ListTile(
+                  title: const Text("홈화면 가기"),
+                  onTap: () => Navigator.pushNamed(context, "/home"),
               ),
-              ExpansionTile(
-                title: const Text('게시판 보기'),
-                initiallyExpanded: false,
-                children: <Widget>[
-                  Divider(height: 10,),
-                  Container (
-                      height: 30,
-                      width: 200,
-                      child: CustomRichText(text: "자유 게시판", route: "/board-list-free")
+                ExpansionTile(
+                  title: Text("게시판 보기"),
+                  children: [
+                  ListTile(
+                    title: Text("자유 게시판"),
+                    onTap: () =>
+                        Navigator.pushNamed(context, "/board-list-free"),
                   ),
-                  Divider(height: 3,),
-                  Container (
-                      height: 30,
-                      width: 200,
-                      child: CustomRichText(text: "질문 게시판", route: "/board-list-ask")
+                  ListTile(
+                    title: Text("질문 게시판"),
+                    onTap: () =>
+                        Navigator.pushNamed(context, "/board-list-ask"),
                   ),
-                  Divider(height: 3,),
-                  Container (
-                      height: 30,
-                      width: 200,
-                      child: CustomRichText(text: "1인분 게시판", route: "/board-list-recipe")
-                  )
+                  ListTile(
+                    title: Text("1인분 게시판"),
+                    onTap: () =>
+                        Navigator.pushNamed(context, "/board-list-recipe"),
+                  ),
                 ],
               ),
-              ListTile(
-                title: Text("게시물 작성하기"),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => BoardRegisterForm(),
-                  ));
-                }
-              ),
-                  ListTile(
-                    title: CustomRichText(text: "내 정보 보기", route: "/my-page")
-                  ),
-                  ListTile(
-                    title: CustomRichText(text: "공지사항", route: "/board-list-notice"),
-                  ),
-              ListTile(
-                title: Text("로그아웃"),
-                onTap: () async {
-                  SpringMemberApi().requestSignOut(_loginDataProvider.userToken);
-                  await SignInForm.storage.delete(key: 'authToken');
-                  setState(() {
-                    isLogin = false;
-                  });
-                  _loginDataProvider.logOut();
-                  showResultDialog(context, "로그아웃", "로그아웃이 완료되었습니다.");
-                  // 토큰 삭제 요청 api
-                },
-              ),
+              isLogin
+                  ? ListTile(
+                      title: Text("게시물 작성하기"),
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BoardRegisterForm(),
+                          )))
+                  : Container(),
+              isLogin
+                  ? ListTile(
+                      title: Text("내 정보 보기"),
+                      onTap: () => Navigator.pushNamed(context, "/my-page"))
+                  : Container(),
+                ListTile(
+                  title: Text("공지사항"),
+                  onTap: () => Navigator.pushNamed(context, "/board-list-notice"),
+                ),
+              isLogin
+                  ? ListTile(
+                    title: Text("로그아웃"),
+                    onTap: () async {
+                      await SpringMemberApi()
+                          .requestSignOut(UserData.authToken);
+                      await UserData.storage.deleteAll();
+                      debugPrint("storage 삭제");
+                      setState(() {
+                        isLogin = false;
+                      });
+                      showResultDialog(context, "로그아웃", "로그아웃이 완료되었습니다.");
+                    },
+                    )
+                  : Container()
             ],
-          )
-      );
-    }
-
-  Widget _logOutDrawer(BuildContext context) {
-    return Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-                child: CustomRichText(text: "로그인", route: "/sign-in"),
-                decoration: BoxDecoration(
-                  color: MainColor.mainColor
-                )
-            ),
-            ListTile(
-              title: CustomRichText(text: "홈화면 가기", route: "/home"),
-            ),
-            ExpansionTile(
-              title: const Text('게시판 보기'),
-              initiallyExpanded: false,
-              children: <Widget>[
-                Divider(height: 10,),
-                Container (
-                    height: 30,
-                    width: 200,
-                    child: CustomRichText(text: "자유게시판", route: "/board-list-free")
-                ),
-                Divider(height: 3,),
-                Container (
-                    height: 30,
-                    width: 200,
-                    child: CustomRichText(text: "자취인 질문 게시판", route: "/board-list-ask")
-                ),
-                Divider(height: 3,),
-                Container (
-                    height: 30,
-                    width: 200,
-                    child: CustomRichText(text: "1인분 레시피 게시판", route: "/board-list-recipe")
-                )
-              ],
-            ),
-            ListTile(
-              title: CustomRichText(text: "공지사항", route: "/board-list-notice"),
-            ),
-          ],
-        )
+          ));
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
     );
-  }
-
-  Future<String?> findAuthToken() async {
-    return await SignInForm.storage.read(key: 'authToken');
   }
 
   void showResultDialog(BuildContext context, String title, String alertMsg) {
