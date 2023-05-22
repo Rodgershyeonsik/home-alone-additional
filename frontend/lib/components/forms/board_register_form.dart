@@ -6,7 +6,7 @@ import 'package:frontend/components/custom_app_bar.dart';
 import 'package:frontend/components/custom_drawer.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_for_board.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
-import 'package:frontend/utility/providers/login_data_provider.dart';
+import 'package:frontend/utility/user_data.dart';
 import 'package:provider/provider.dart';
 
 import '../../utility/size.dart';
@@ -23,7 +23,6 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
 
   late TextEditingController titleController = TextEditingController();
   late TextEditingController contentController = TextEditingController();
-  late LoginDataProvider _loginDataProvider;
 
   late String title;
   late String writer;
@@ -38,7 +37,6 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
     contentController.addListener(() {
       content = contentController.text;
     });
-    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
 
     super.initState();
   }
@@ -54,7 +52,7 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    writer = _loginDataProvider.userNickname;
+    writer = UserData.nickname!;
 
     return Scaffold(
       appBar: CommonAppBar(title: "게시물 작성하기"),

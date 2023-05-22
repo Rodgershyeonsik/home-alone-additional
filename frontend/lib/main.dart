@@ -11,7 +11,6 @@ import 'package:frontend/pages/sign_up_page.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:frontend/utility/providers/board_list_provider.dart';
-import 'package:frontend/utility/providers/login_data_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -23,14 +22,12 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (BuildContext context) => BoardListProvider()),
           ChangeNotifierProvider(create: (BuildContext context) => CategoryProvider()),
-          ChangeNotifierProvider(create: (BuildContext context) => LoginDataProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -38,14 +35,9 @@ class MyApp extends StatelessWidget {
         primaryColor: MainColor.mainColor,
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
         backgroundColor: MainColor.mainColor,
+            titleTextStyle: const TextStyle(color: Colors.white)
+        )
         ),
-        textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-        backgroundColor: MainColor.mainColor,
-        primary: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        minimumSize: Size(300, 45),
-        ))),
         title: 'HOME ALONE',
         initialRoute: "/home",
         routes: {

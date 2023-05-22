@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api/spring_member_api.dart';
-import 'package:frontend/utility/providers/login_data_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../components/forms/board_list_view.dart';
@@ -9,34 +7,12 @@ import '../components/custom_drawer.dart';
 import '../components/custom_app_bar.dart';
 import '../utility/providers/board_list_provider.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  late UserDataResponse res;
-  late BoardListProvider _providerTest;
-  late LoginDataProvider _loginDataProvider;
-
-  @override
-  void initState() {
-    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
-    _providerTest = Provider.of<BoardListProvider>(context, listen: false);
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _providerTest.loadEveryBoards();
-    debugPrint("homepage loginstate:" + _loginDataProvider.loginState.toString());
-
-    if(_loginDataProvider.loginState == true) {
-      _loginDataProvider.getUserData();
-    }
+    Provider.of<BoardListProvider>(context, listen: false).loadEveryBoards();
 
     return Scaffold(
       appBar: const CommonAppBar(title: "HOME-ALONE"),

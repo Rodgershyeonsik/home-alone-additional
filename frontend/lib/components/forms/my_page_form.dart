@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/forms/sign_in_form.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_nickname.dart';
-import 'package:provider/provider.dart';
 
 import '../../api/spring_member_api.dart';
-import '../../utility/providers/login_data_provider.dart';
 import '../../utility/size.dart';
+import '../../utility/user_data.dart';
 import '../custom_alert_dialog.dart';
 
 class MyPageForm extends StatefulWidget {
@@ -22,7 +20,6 @@ class _MyPageFormState extends State<MyPageForm> {
   late String modifyNickname;
   bool? nicknamePass;
 
-  late LoginDataProvider _loginDataProvider;
   late bool? res;
 
   @override
@@ -30,8 +27,6 @@ class _MyPageFormState extends State<MyPageForm> {
     nicknameController.addListener(() {
       modifyNickname = nicknameController.text;
     });
-
-    _loginDataProvider = Provider.of<LoginDataProvider>(context, listen: false);
 
     super.initState();
   }
@@ -51,7 +46,7 @@ class _MyPageFormState extends State<MyPageForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("현재 닉네임: " + _loginDataProvider.userNickname,
+              Text("현재 닉네임: " + UserData.nickname!,
               style: const TextStyle(
                 fontSize: 25
               )),
@@ -80,7 +75,7 @@ class _MyPageFormState extends State<MyPageForm> {
               TextButton(onPressed: () async {
                 if (_formKey.currentState!.validate() && nicknamePass == true) {
                   res = await SpringMemberApi().
-                  requestModifyUserData(ModifyUserDataRequest(_loginDataProvider.userToken.toString(), modifyNickname));
+                  requestModifyUserData(ModifyUserDataRequest(UserData.authToken!, modifyNickname));
                 }
               }, child: const Text("닉네임 변경하기")),
               const SizedBox(
@@ -99,11 +94,10 @@ class _MyPageFormState extends State<MyPageForm> {
                       ),
                       TextButton(
                         onPressed: () async {
-                          res = await SpringMemberApi().requestUnregister(_loginDataProvider.userToken);
+                          res = await SpringMemberApi().requestUnregister(UserData.authToken);
                           if(res == true) {
-                            await SpringMemberApi().requestSignOut(_loginDataProvider.userToken);
-                            await SignInForm.storage.delete(key: 'login');
-                            _loginDataProvider.logOut();
+                            await SpringMemberApi().requestSignOut(UserData.authToken);
+                            await UserData.storage.deleteAll();
                             Navigator.pushNamed(context, "/home");
                           }
                         },
