@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
         primaryColor: MainColor.mainColor,
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
         backgroundColor: MainColor.mainColor,
-            titleTextStyle: const TextStyle(color: Colors.white)
         )
         ),
         title: 'HOME ALONE',

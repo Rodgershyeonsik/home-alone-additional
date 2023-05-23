@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
     Provider.of<BoardListProvider>(context, listen: false).loadEveryBoards();
 
     return Scaffold(
-      appBar: const CommonAppBar(title: "HOME-ALONE"),
+      appBar: const CommonAppBar(title: "HOME ALONE"),
       body: Consumer<BoardListProvider>(
           builder: (context, provider, widget){
             if (provider.boards != null && provider.boards.length > 0) {
