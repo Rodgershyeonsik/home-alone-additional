@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_email.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_password.dart';
+import 'package:frontend/utility/long_button_container.dart';
 
 import '../../api/spring_member_api.dart';
 import '../../utility/size.dart';
@@ -64,29 +65,35 @@ class _SignInFormState extends State<SignInForm> {
             const SizedBox(
               height: medium_gap,
             ),
-            TextButton(
-              onPressed: () async {
-                if (!_formKey.currentState!.validate()) {
-                  showResultDialog(context, '알림', '모두 유효한 값을 입력하세요!');
-                  return;
-                }
+            LongButtonContainer(
+              textButton: TextButton(
+                onPressed: () async {
+                  if (!_formKey.currentState!.validate()) {
+                    showResultDialog(context, '알림', '모두 유효한 값을 입력하세요!');
+                    return;
+                  }
 
-                _signInResponse = await SpringMemberApi()
-                    .signIn(MemberSignInRequest(_email, _password));
+                  _signInResponse = await SpringMemberApi()
+                      .signIn(MemberSignInRequest(_email, _password));
 
-                switch (_signInResponse.result) {
-                  case emailDoesNotExist:
-                    showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
-                    break;
-                  case incorrectPassword:
-                    showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
-                    break;
-                  default:
-                    await UserData.writeSignInResDataToStorage(_signInResponse);
-                    Navigator.pushNamed(context, "/home");
-                }
-              },
-              child: const Text("로그인"),
+                  switch (_signInResponse.result) {
+                    case emailDoesNotExist:
+                      showResultDialog(context, "로그인 실패!", "가입된 사용자 아님");
+                      break;
+                    case incorrectPassword:
+                      showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
+                      break;
+                    default:
+                      await UserData.writeSignInResDataToStorage(_signInResponse);
+                      Navigator.pushNamed(context, "/home");
+                  }
+                },
+                child: const Text("로그인",
+                style: TextStyle(
+                  color: Colors.white
+                ),
+                ),
+              ),
             ),
             const SizedBox(
               height: large_gap,

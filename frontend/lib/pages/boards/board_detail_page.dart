@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/custom_app_bar.dart';
 import 'package:frontend/components/custom_drawer.dart';
 import 'package:frontend/components/forms/board_modify_form.dart';
+import 'package:frontend/utility/long_button_container.dart';
 
 import '../../api/board.dart';
 import '../../utility/user_data.dart';
@@ -71,30 +72,34 @@ class BoardDetailPage extends StatelessWidget {
                     style: TextStyle(fontSize: 15,)
                 )
             ),
-            Container(
-                margin: EdgeInsets.only(left: 50, right: 50),
-                child: TextButton(
-                    onPressed: () {
-                      moveToList(context, board.categoryName);
-                    },
-                    child: Text("목록으로 돌아가기")
-                )
+            LongButtonContainer(
+              textButton: TextButton(
+                  onPressed: () {
+                    moveToList(context, board.categoryName);
+                  },
+                  child: Text("목록으로 돌아가기",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),)
+              ),
             ),
             Visibility(
                 visible: UserData.nickname == board.writer ? true : false, // board.writer == 로그인 유저 닉네임 이런 식으로 줄 예정(?)
-                child: Container(
-                    margin: EdgeInsets.only(left: 50, right: 50),
-                    child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BoardModifyForm(board: board),
-                            ),
-                          );
-                        },
-                        child: Text("게시물 수정하기")
-                    )
+                child: LongButtonContainer(
+                  textButton: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BoardModifyForm(board: board),
+                          ),
+                        );
+                      },
+                      child: Text("게시물 수정하기",
+                      style: TextStyle(
+                        color: Colors.white
+                      ),)
+                  ),
                 ))
           ],
         )

@@ -5,6 +5,7 @@ import 'package:frontend/components/buttons/category_drop-down_btn.dart';
 import 'package:frontend/components/custom_app_bar.dart';
 import 'package:frontend/components/custom_drawer.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_for_board.dart';
+import 'package:frontend/utility/long_button_container.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
 import 'package:frontend/utility/user_data.dart';
 import 'package:provider/provider.dart';
@@ -70,18 +71,23 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
                   SizedBox(height: small_gap,),
                   Consumer<CategoryProvider>(
                     builder: (context, category, child) {
-                      return TextButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              boardCategoryName = category.category;
-                              SpringBoardApi().requestBoardRegister(BoardRegisterRequest(title, writer, content, boardCategoryName));
-                              category.setDefaultCategory();
-                              moveToList(boardCategoryName);
-                            } else {
-                              showResultDialog(context, "게시물 등록 실패", "제목과 내용을 작성해주세요!");
-                            }
-                          },
-                          child: Text("게시글 등록하기")
+                      return LongButtonContainer(
+                          textButton: TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                boardCategoryName = category.category;
+                                SpringBoardApi().requestBoardRegister(BoardRegisterRequest(title, writer, content, boardCategoryName));
+                                category.setDefaultCategory();
+                                moveToList(boardCategoryName);
+                              } else {
+                                showResultDialog(context, "게시물 등록 실패", "제목과 내용을 작성해주세요!");
+                              }
+                            },
+                            child: Text("게시글 등록하기",
+                            style: TextStyle(
+                              color: Colors.white
+                            ),)
+                        ),
                       );
                     }
                   )

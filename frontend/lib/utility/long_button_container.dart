@@ -6,10 +6,10 @@ import 'main_color.dart';
 class LongButtonContainer extends StatelessWidget {
   const LongButtonContainer({
     Key? key,
-    required this.button
+    required this.textButton
   }) : super(key: key);
 
-  final TextButton button;
+  final TextButton textButton;
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +20,12 @@ class LongButtonContainer extends StatelessWidget {
     return Container(
       width: screenWidth,
       height: screenHeight * 0.06,
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
         color: MainColor.mainColor,
         borderRadius: BorderRadius.circular(15.0)
       ),
-      child: button
+      child: textButton
     );
   }
 }

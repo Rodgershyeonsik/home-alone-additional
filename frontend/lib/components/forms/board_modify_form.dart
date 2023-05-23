@@ -4,6 +4,7 @@ import 'package:frontend/api/spring_board_api.dart';
 import 'package:frontend/components/custom_app_bar.dart';
 import 'package:frontend/components/custom_drawer.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_for_board.dart';
+import 'package:frontend/utility/long_button_container.dart';
 
 import '../../api/board.dart';
 import '../../pages/boards/board_detail_page.dart';
@@ -71,30 +72,40 @@ class _BoardModifyFormState extends State<BoardModifyForm> {
                   SizedBox(height: small_gap,),
                   TextFormFieldForBoard(use:"내용", maxLines:20, controller: contentController),
                   SizedBox(height: small_gap,),
-                  TextButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        responseBoard = await SpringBoardApi().requestBoardModify(BoardModifyRequest(boardNo, title, content));
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BoardDetailPage(board: responseBoard),
-                          ),
-                        );
-                      } else {
-                        showResultDialog(context, "게시물 등록 실패", "제목과 내용을 작성해주세요!");
-                      }
-                    },
-                    child: Text("게시글 수정하기")
-                ),
-                  SizedBox(height: small_gap,),
-                  TextButton(
+                  LongButtonContainer(
+                    textButton: TextButton(
                       onPressed: () async {
-                        await SpringBoardApi().requestBoardDelete(boardNo);
-                        moveToList(category);
+                        if (_formKey.currentState!.validate()) {
+                          responseBoard = await SpringBoardApi().requestBoardModify(BoardModifyRequest(boardNo, title, content));
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BoardDetailPage(board: responseBoard),
+                            ),
+                          );
+                        } else {
+                          showResultDialog(context, "게시물 등록 실패", "제목과 내용을 작성해주세요!");
+                        }
                       },
-                      child: Text("게시글 삭제하기")
+                      child: Text("게시글 수정하기",
+                      style: TextStyle(
+                        color: Colors.white
+                      ),)
+                ),
+                  ),
+                  SizedBox(height: small_gap,),
+                  LongButtonContainer(
+                    textButton: TextButton(
+                        onPressed: () async {
+                          await SpringBoardApi().requestBoardDelete(boardNo);
+                          moveToList(category);
+                        },
+                        child: Text("게시글 삭제하기",
+                        style: TextStyle(
+                          color: Colors.white
+                        ),)
+                    ),
                   )],
               )
             )
