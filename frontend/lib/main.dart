@@ -35,7 +35,12 @@ class MyApp extends StatelessWidget {
         primaryColor: MainColor.mainColor,
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
         backgroundColor: MainColor.mainColor,
-        )
+        ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              primary: Colors.black
+            )
+          )
         ),
         title: 'HOME ALONE',
         initialRoute: "/home",
