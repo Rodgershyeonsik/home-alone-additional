@@ -49,7 +49,9 @@ class BoardListView extends StatelessWidget {
 
     return Row(
       children: [
-        Expanded(
+        Flexible(
+          flex: 6,
+          fit: FlexFit.tight,
           child: Padding(
             padding: EdgeInsets.all(7.0),
             child: Column(
@@ -58,6 +60,7 @@ class BoardListView extends StatelessWidget {
                 Text(
                   board.title.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 5.0),
                 Text(splitRegDate[0] + ' ' + splitRegDate[1].substring(0,5),
@@ -67,18 +70,14 @@ class BoardListView extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(
+        Flexible(
+          flex: 1,
+          fit: FlexFit.loose,
           child: Padding(
             padding: EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  board.writer.toString(),
-                  style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),
-                ),
-              ],
+            child: Text(
+              board.writer.toString(),
+              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),
             ),
           ),
         ),

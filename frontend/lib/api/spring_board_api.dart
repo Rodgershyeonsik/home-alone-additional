@@ -67,15 +67,12 @@ class SpringBoardApi{
   Future<List<Board>?> requestEveryBoardList() async {
     print('보드 리스트 요청');
 
-    var response = await http.get(
-      Uri.http(HttpUri.home, '/board/list'),
-      headers: {"Content-Type": "application/json"},
-    );
+    var response = await http.get(Uri.http(HttpUri.home, '/board/list'));
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("board list 통신 확인");
+      debugPrint("every board list: " + utf8.decode(response.bodyBytes).toString());
 
-      debugPrint(jsonDecode(utf8.decode(response.bodyBytes)).toString()); //json으로 받은걸 toString
       var jsonBoard = jsonDecode(utf8.decode(response.bodyBytes)) as List;
 
       List<Board> list = jsonBoard.map((dataJson)=>Board.fromJson(dataJson)).toList();
@@ -83,15 +80,14 @@ class SpringBoardApi{
       return list;
 
     } else {
-      throw Exception("통신 실패");
+      throw Exception("board list 통신 실패");
     }
   }
 
   Future<List<Board>?> requestSpecificBoardList(String categoryName) async {
 
     var response = await http.get(
-        Uri.http(HttpUri.home, '/board/list/$categoryName'),
-        headers: {"Content-Type": "application/json"},
+        Uri.http(HttpUri.home, '/board/list/$categoryName')
     );
 
     if (response.statusCode == 200) {

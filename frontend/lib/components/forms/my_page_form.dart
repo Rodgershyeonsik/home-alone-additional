@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_nickname.dart';
 import 'package:frontend/utility/long_button_container.dart';
+import 'package:provider/provider.dart';
 
 import '../../api/spring_member_api.dart';
 import '../../utility/size.dart';
-import '../../utility/user_data.dart';
+import '../../utility/providers/user_data_provider.dart';
 import '../custom_alert_dialog.dart';
 
 class MyPageForm extends StatefulWidget {
@@ -18,7 +19,7 @@ class MyPageForm extends StatefulWidget {
 class _MyPageFormState extends State<MyPageForm> {
 
   late TextEditingController nicknameController = TextEditingController();
-  late String modifyNickname;
+  late String newNickname;
   bool? nicknamePass;
 
   late bool? res;
@@ -26,7 +27,7 @@ class _MyPageFormState extends State<MyPageForm> {
   @override
   void initState() {
     nicknameController.addListener(() {
-      modifyNickname = nicknameController.text;
+      newNickname = nicknameController.text;
     });
 
     super.initState();
@@ -44,85 +45,105 @@ class _MyPageFormState extends State<MyPageForm> {
 
     return Form(
         key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text("현재 닉네임: " + UserData.nickname!,
-              style: const TextStyle(
-                fontSize: 25
-              )),
-              const SizedBox(height: large_gap),
-              const Text("새 닉네임", style: TextStyle(
-                  fontSize: 25
-              )),
-              const SizedBox(
-                height: medium_gap,
-              ),
-              TextFormFieldNickname(controller: nicknameController),
-              const SizedBox(height: medium_gap),
-              LongButtonContainer(
-                textButton: TextButton(
-                  onPressed: () async {
-                    nicknamePass = await SpringMemberApi().nicknameCheck(modifyNickname);
-                    debugPrint("nicknamePass: " + nicknamePass.toString());
-
-                    if(nicknamePass == true) {
-                      showResultDialog(context, "닉네임 중복 확인", "사용 가능한 닉네임입니다.");
-                    } else {
-                      showResultDialog(context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
-                    }
-
-                  }, child: const Text("닉네임 중복 확인",
-                style: TextStyle(
-                  color: Colors.white
-                ),),
-                ),
-              ),
-              LongButtonContainer(
-                textButton: TextButton(
-                    onPressed: () async {
-                  if (_formKey.currentState!.validate() && nicknamePass == true) {
-                    res = await SpringMemberApi().
-                    requestModifyUserData(ModifyUserDataRequest(UserData.authToken!, modifyNickname));
-                  }
-                }, child: const Text("닉네임 변경하기",
-                style: TextStyle(
-                  color: Colors.white
-                ),)),
-              ),
-              const SizedBox(
-                height: 100.0,
-              ),
-              TextButton(
-                onPressed: () => showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text('회원 탈퇴'),
-                    content: const Text('회원 탈퇴 하시겠습니까?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('아니오'),
-                      ),
-                      TextButton(
+          child: Consumer<UserDataProvider>(
+            builder: (context, provider, widget) {
+              return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("현재 닉네임: " + provider.nickname!,
+                        style: const TextStyle(
+                            fontSize: 25
+                        )),
+                    const SizedBox(height: large_gap),
+                    const Text("새 닉네임", style: TextStyle(
+                        fontSize: 25
+                    )),
+                    const SizedBox(
+                      height: medium_gap,
+                    ),
+                    TextFormFieldNickname(controller: nicknameController),
+                    const SizedBox(height: medium_gap),
+                    LongButtonContainer(
+                      textButton: TextButton(
                         onPressed: () async {
-                          res = await SpringMemberApi().requestUnregister(UserData.authToken);
-                          if(res == true) {
-                            await SpringMemberApi().requestSignOut(UserData.authToken);
-                            await UserData.storage.deleteAll();
-                            Navigator.pushNamed(context, "/home");
+                          nicknamePass =
+                          await SpringMemberApi().nicknameCheck(newNickname);
+                          debugPrint(
+                              "nicknamePass: " + nicknamePass.toString());
+
+                          if (nicknamePass == true) {
+                            showResultDialog(
+                                context, "닉네임 중복 확인", "사용 가능한 닉네임입니다.");
+                          } else {
+                            showResultDialog(
+                                context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
                           }
-                        },
-                        child: const Text('네'),
+                        }, child: const Text("닉네임 중복 확인",
+                        style: TextStyle(
+                            color: Colors.white
+                        ),),
                       ),
-                    ],
-                  ),
-                ),
-                  child: Text("회원 탈퇴하기",
-                  style: TextStyle(
-                    color: Colors.grey.shade400
-                  ),)),
-          ])
+                    ),
+                    LongButtonContainer(
+                      textButton: TextButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate() &&
+                                nicknamePass == true) {
+                              res = await SpringMemberApi().
+                              requestModifyUserData(
+                                  ModifyUserDataRequest(provider.authToken!,
+                                      newNickname));
+                              await UserDataProvider.storage.write(
+                                  key: 'nickname', value: newNickname);
+                            }
+                            provider.changeNickname(newNickname);
+                          }, child: const Text("닉네임 변경하기",
+                        style: TextStyle(
+                            color: Colors.white
+                        ),)),
+                    ),
+                    const SizedBox(
+                      height: 100.0,
+                    ),
+                    TextButton(
+                        onPressed: () =>
+                            showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  AlertDialog(
+                                    title: const Text('회원 탈퇴'),
+                                    content: const Text('회원 탈퇴 하시겠습니까?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('아니오'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          res = await SpringMemberApi()
+                                              .requestUnregister(
+                                              provider.authToken);
+                                          if (res == true) {
+                                            await SpringMemberApi()
+                                                .requestSignOut(
+                                                provider.authToken);
+                                            await UserDataProvider.storage.deleteAll();
+                                            Navigator.pushNamed(
+                                                context, "/home");
+                                          }
+                                        },
+                                        child: const Text('네'),
+                                      ),
+                                    ],
+                                  ),
+                            ),
+                        child: Text("회원 탈퇴하기",
+                          style: TextStyle(
+                              color: Colors.grey.shade400
+                          ),)),
+                  ]);
+            }
+          )
         );
   }
 

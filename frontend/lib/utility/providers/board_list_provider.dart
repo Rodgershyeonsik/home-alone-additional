@@ -8,19 +8,19 @@ class BoardListProvider extends ChangeNotifier{
   List<Board> _boards = [];
   List<Board> get boards => _boards;
 
-  loadEveryBoards() async {
+  Future<void> loadEveryBoards() async {
     List<Board>? boardList = await SpringBoardApi().requestEveryBoardList();
     _boards = boardList!;
     notifyListeners();
   }
-  
-  loadFreeBoards() async {
+
+  Future<void> loadFreeBoards() async {
     List<Board>? boardList = await SpringBoardApi().requestSpecificBoardList("자유");
     _boards = boardList!;
     notifyListeners();
   }
 
-  loadAskBoards() async {
+  Future<void> loadAskBoards() async {
     List<Board>? boardList = await SpringBoardApi().requestSpecificBoardList("질문");
     _boards = boardList!;
     notifyListeners();

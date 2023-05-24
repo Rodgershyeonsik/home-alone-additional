@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
       appBar: const CommonAppBar(title: "HOME ALONE"),
       body: Consumer<BoardListProvider>(
           builder: (context, provider, widget){
-            if (provider.boards != null && provider.boards.length > 0) {
+            if (provider.boards.isNotEmpty) {
               return BoardListView(boards: provider.boards, listTitle: "전체 게시글 목록",);
             }
             return const Center(
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
             );
           },
         ),
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
     );
   }
 }

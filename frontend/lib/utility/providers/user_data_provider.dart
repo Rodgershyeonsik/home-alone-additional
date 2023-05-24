@@ -2,20 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/api/spring_member_api.dart';
 
-class UserData {
+class UserDataProvider extends ChangeNotifier {
   static const FlutterSecureStorage storage = FlutterSecureStorage();
-  static String? authToken;
-  static String? email;
-  static String? nickname;
 
-  static Future<void> setUserData() async {
+  String? _authToken;
+  String? _email;
+  String? _nickname;
+
+  String? get authToken => _authToken;
+  String? get email => _email;
+  String? get nickname => _nickname;
+
+  Future<void> setUserData() async {
     debugPrint("setUserData 시작");
-    authToken = await storage.read(key: 'authToken');
+    _authToken = await storage.read(key: 'authToken');
     debugPrint("토큰 읽음");
-    email = await storage.read(key: 'email');
+    _email = await storage.read(key: 'email');
     debugPrint("email 읽음");
-    nickname = await storage.read(key: 'nickname');
+    _nickname = await storage.read(key: 'nickname');
     debugPrint("닉넴 읽음");
+  }
+
+  void changeNickname(String newNickname) {
+    _nickname = newNickname;
+    notifyListeners();
   }
 
   static Future<void> writeSignInResDataToStorage(SignInResponse response) async {

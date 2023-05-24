@@ -7,7 +7,7 @@ import 'package:frontend/components/custom_drawer.dart';
 import 'package:frontend/components/text_form_fields/text_form_field_for_board.dart';
 import 'package:frontend/utility/long_button_container.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
-import 'package:frontend/utility/user_data.dart';
+import 'package:frontend/utility/providers/user_data_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../utility/size.dart';
@@ -53,7 +53,7 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    writer = UserData.nickname!;
+    writer = Provider.of<UserDataProvider>(context, listen: false).nickname!;
 
     return Scaffold(
       appBar: CommonAppBar(title: "게시물 작성하기"),

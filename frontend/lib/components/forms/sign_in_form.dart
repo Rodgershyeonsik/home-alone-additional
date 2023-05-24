@@ -7,7 +7,7 @@ import 'package:frontend/utility/long_button_container.dart';
 
 import '../../api/spring_member_api.dart';
 import '../../utility/size.dart';
-import '../../utility/user_data.dart';
+import '../../utility/providers/user_data_provider.dart';
 import '../custom_alert_dialog.dart';
 
 class SignInForm extends StatefulWidget {
@@ -84,7 +84,7 @@ class _SignInFormState extends State<SignInForm> {
                       showResultDialog(context, "로그인 실패!", "비밀번호가 일치하지 않습니다.");
                       break;
                     default:
-                      await UserData.writeSignInResDataToStorage(_signInResponse);
+                      await UserDataProvider.writeSignInResDataToStorage(_signInResponse);
                       Navigator.pushNamed(context, "/home");
                   }
                 },
