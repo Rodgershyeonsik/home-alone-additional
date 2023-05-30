@@ -75,7 +75,10 @@ class SpringMemberApi {
       debugPrint("로그인 통신 확인");
       debugPrint("signIn response: " + response.body);
 
-      return SignInResponse.fromJson(json.decode(response.body));
+      var uft8DecodedJsonRes = jsonDecode(utf8.decode(response.bodyBytes));
+
+
+      return SignInResponse.fromJson(uft8DecodedJsonRes);
     } else {
       throw Exception("로그인 통신 실패");
     }
