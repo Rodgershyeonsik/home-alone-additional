@@ -5,34 +5,71 @@ import 'package:flutter/rendering.dart';
 import '../../api/board.dart';
 import '../../pages/boards/board_detail_page.dart';
 
-class BoardListView extends StatelessWidget {
+class BoardListView extends StatefulWidget {
   BoardListView ({Key? key, required this.boards, required this.listTitle}) : super(key: key);
 
   String listTitle;
   List<Board> boards;
+  List<String> sortItems = ["최신순", "오래된 순"];
+
+  @override
+  State<BoardListView> createState() => _BoardListViewState();
+}
+
+
+class _BoardListViewState extends State<BoardListView> {
+
+  late String dropdownValue =  widget.sortItems.first;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(15.0),
-            child: Text( listTitle,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            padding: const EdgeInsets.all(10.0),
+            color: Colors.grey[100],
+            height: 55.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text( widget.listTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                DropdownButton<String>(
+                  elevation: 0,
+                    iconSize: 30.0,
+                    dropdownColor: Colors.grey[100],
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15
+                    ),
+                    menuMaxHeight: 100,
+                    value: dropdownValue,
+                    items: widget.sortItems.map<DropdownMenuItem<String>>((value) =>
+                    DropdownMenuItem<String>(
+                      value: value,
+                        child: Text(value))).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownValue = value!;
+                      });
+                    })
+              ],
+            ),
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: boards.length,
+              itemCount: widget.boards.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                    title: _makeBoard(boards[index]),
+                    title: _makeBoard(widget.boards[index]),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BoardDetailPage(board: boards[index]),
+                        builder: (context) => BoardDetailPage(board: widget.boards[index]),
                       ),
                     );
                   },
@@ -44,45 +81,36 @@ class BoardListView extends StatelessWidget {
       )
     );
   }
-  Widget _makeBoard(Board board) {
-    List<String> splitRegDate = board.regDate.toString().split('T');
 
-    return Row(
-      children: [
-        Flexible(
-          flex: 6,
-          fit: FlexFit.tight,
-          child: Padding(
-            padding: EdgeInsets.all(7.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  board.title.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 5.0),
-                Text(splitRegDate[0] + ' ' + splitRegDate[1].substring(0,5),
-                  style: TextStyle(fontWeight: FontWeight.normal, fontSize: 10),
-                ),
-              ],
-            ),
+  Widget _makeBoard(Board board) {
+    List<String> splitRegDate = board.regDate.split('T');
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            board.title,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-        Flexible(
-          flex: 1,
-          fit: FlexFit.loose,
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              board.writer.toString(),
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),
-            ),
-          ),
-        ),
-      ],
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(splitRegDate[0] + ' ' + splitRegDate[1].substring(0,5),
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 10),
+              ),
+              Text(
+                board.writer,
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
-
 }
