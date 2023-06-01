@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:frontend/utility/providers/board_list_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../api/board.dart';
 import '../../pages/boards/board_detail_page.dart';
+import '../../utility/custom_enums.dart';
 
 class BoardListView extends StatefulWidget {
   BoardListView ({Key? key, required this.boards, required this.listTitle}) : super(key: key);
@@ -19,7 +22,7 @@ class BoardListView extends StatefulWidget {
 
 class _BoardListViewState extends State<BoardListView> {
 
-  late String dropdownValue =  widget.sortItems.first;
+  late String _dropdownValue =  widget.sortItems.first;
 
   @override
   Widget build(BuildContext context) {
@@ -36,25 +39,7 @@ class _BoardListViewState extends State<BoardListView> {
               children: [
                 Text( widget.listTitle,
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                DropdownButton<String>(
-                  elevation: 0,
-                    iconSize: 30.0,
-                    dropdownColor: Colors.grey[100],
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 15
-                    ),
-                    menuMaxHeight: 100,
-                    value: dropdownValue,
-                    items: widget.sortItems.map<DropdownMenuItem<String>>((value) =>
-                    DropdownMenuItem<String>(
-                      value: value,
-                        child: Text(value))).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        dropdownValue = value!;
-                      });
-                    })
+                _buildSortDropdown()
               ],
             ),
           ),
@@ -80,6 +65,37 @@ class _BoardListViewState extends State<BoardListView> {
         ],
       )
     );
+  }
+
+  DropdownButton<String> _buildSortDropdown() {
+    return DropdownButton<String>(
+                elevation: 0,
+                  underline: Container(),
+                  iconSize: 30.0,
+                  isDense: true,
+                  dropdownColor: Colors.red,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15
+                  ),
+                  menuMaxHeight: 130,
+                  value: _dropdownValue,
+                  items: widget.sortItems.map<DropdownMenuItem<String>>((value) =>
+                  DropdownMenuItem<String>(
+                    value: value,
+                      child: Text(value))).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _dropdownValue = value!;
+                      if(_dropdownValue == "최신순"){
+                        print('최신순 정렬됨?');
+                        Provider.of<BoardListProvider>(context, listen: false).sortBoard(SortBy.latest);
+                      } else {
+                        print('오래된 순 정렬됨?');
+                        Provider.of<BoardListProvider>(context, listen: false).sortBoard(SortBy.earliest);
+                      }
+                    });
+                  });
   }
 
   Widget _makeBoard(Board board) {
