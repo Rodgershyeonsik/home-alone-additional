@@ -9,20 +9,18 @@ import '../../pages/boards/board_detail_page.dart';
 import '../../utility/custom_enums.dart';
 
 class BoardListView extends StatefulWidget {
-  BoardListView({Key? key, required this.boards, required this.listTitle})
+  const BoardListView({Key? key, required this.boards, required this.listTitle})
       : super(key: key);
 
-  String listTitle;
-  List<Board> boards;
-  List<String> sortItems = ["최신순", "오래된 순"];
+  final String listTitle;
+  final List<Board> boards;
 
   @override
   State<BoardListView> createState() => _BoardListViewState();
 }
 
 class _BoardListViewState extends State<BoardListView> {
-  late String _sortValue = widget.sortItems.first;
-  bool sortButtonIsExpanded = false;
+  String _sortValue = SortBy.latest.sortValue;
 
   @override
   Widget build(BuildContext context) {
@@ -33,25 +31,26 @@ class _BoardListViewState extends State<BoardListView> {
             Container(
               padding: const EdgeInsets.all(10.0),
               color: Colors.grey[100],
-              height: 55.0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(widget.listTitle,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20)),
-                  _buildSortButton()
+                  _buildSortButton(context)
                 ],
               ),
             ),
             Expanded(
                 child: ListView.separated(
-              itemCount: widget.boards.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: _makeBoard(widget.boards[index]),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
-                  onTap: () {
+                  separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(thickness: 1, height: 1),
+                  itemCount: widget.boards.length,
+                  itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: _makeBoard(widget.boards[index]),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -62,81 +61,56 @@ class _BoardListViewState extends State<BoardListView> {
                   },
                 );
               },
-              separatorBuilder: (BuildContext context, int index) =>
-                  Divider(thickness: 1, height: 1),
             ))
           ],
         ));
   }
 
-  Widget _buildSortButton() {
-    return Container(
-      color: Colors.green,
-      width: 200,
-      height: 150.0,
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Column(children: [
-          Row(
-            children: [
-              Text(_sortValue),
-              sortButtonIsExpanded
-                  ? Icon(Icons.arrow_drop_up)
-                  : Icon(Icons.arrow_drop_down),
-            ],
-          ),
-          sortButtonIsExpanded
-              ? Column(
-                  children: [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            sortButtonIsExpanded = false;
-                          });
-                          Provider.of<BoardListProvider>(context,
-                                  listen: false)
-                              .sortBoard(SortBy.latest);
-                        },
-                        child: Text("최신순")),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            sortButtonIsExpanded = false;
-                          });
-                          Provider.of<BoardListProvider>(context,
-                                  listen: false)
-                              .sortBoard(SortBy.earliest);
-                        },
-                        child: Text("오래된순")),
-                  ],
-                )
-              : const SizedBox.shrink()
-        ])
-        // child: DropdownButton<String>(
-        //             elevation: 0,
-        //               underline: Container(),
-        //               iconSize: 30.0,
-        //               style: TextStyle(
-        //                 color: Colors.black87,
-        //                 fontSize: 15
-        //               ),
-        //               value: _dropdownValue,
-        //               items: widget.sortItems.map<DropdownMenuItem<String>>((value) =>
-        //               DropdownMenuItem<String>(
-        //                 value: value,
-        //                   child: Text(value))).toList(),
-        //               onChanged: (value) {
-        //                 setState(() {
-        //                   _dropdownValue = value!;
-        //                   if(_dropdownValue == "최신순"){
-        //                     print('최신순 정렬됨?');
-        //                     Provider.of<BoardListProvider>(context, listen: false).sortBoard(SortBy.latest);
-        //                   } else {
-        //                     print('오래된 순 정렬됨?');
-        //                     Provider.of<BoardListProvider>(context, listen: false).sortBoard(SortBy.earliest);
-        //                   }
-        //                 });
-        //               }),
-        );
+  Widget _buildSortButton(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return GestureDetector(
+      child: Row(
+        children: [Text(_sortValue), const Icon(Icons.arrow_drop_down)],
+      ),
+      onTap: () {
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                  height: size.height * 0.20,
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25.0),
+                          topRight: Radius.circular(25.0))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildSortOption(context, SortBy.latest),
+                      _buildSortOption(context, SortBy.earliest)
+                    ],
+                  ));
+            },
+            backgroundColor: Colors.transparent);
+      },
+    );
+  }
+
+  Widget _buildSortOption(BuildContext context, SortBy sortBy) {
+    var size = MediaQuery.of(context).size;
+
+    return TextButton(
+        style: TextButton.styleFrom(
+            minimumSize: Size.fromHeight(size.height * 0.08)),
+        onPressed: () {
+          setState(() {
+            _sortValue = sortBy.sortValue;
+          });
+          Navigator.pop(context);
+          Provider.of<BoardListProvider>(context, listen: false)
+              .sortBoard(sortBy);
+        },
+        child: Text(sortBy.sortValue));
   }
 
   Widget _makeBoard(Board board) {
