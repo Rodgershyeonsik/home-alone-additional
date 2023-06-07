@@ -32,6 +32,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       isLogin
                           ? UserAccountsDrawerHeader(
+                        decoration: BoxDecoration(
+                          color: MainColor.mainColor
+                        ),
                           accountName: Text(provider.nickname!),
                           accountEmail: Text(provider.email!))
                           : DrawerHeader(
