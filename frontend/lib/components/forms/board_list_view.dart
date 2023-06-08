@@ -5,7 +5,7 @@ import 'package:frontend/utility/providers/board_list_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../api/board.dart';
-import '../../pages/boards/board_detail_page.dart';
+import '../../pages/boards/board_detail_screen.dart';
 import '../../utility/custom_enums.dart';
 
 class BoardListView extends StatefulWidget {
@@ -55,7 +55,7 @@ class _BoardListViewState extends State<BoardListView> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            BoardDetailPage(board: widget.boards[index]),
+                            BoardDetailScreen(board: widget.boards[index]),
                       ),
                     );
                   },
