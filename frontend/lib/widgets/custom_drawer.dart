@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/api/spring_member_api.dart';
+import 'package:frontend/auth/api/spring_member_api.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:provider/provider.dart';
 
+import '../board/screens/board_register_screen.dart';
 import '../utility/providers/user_data_provider.dart';
 import 'custom_alert_dialog.dart';
-import 'forms/board_register_form.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -84,7 +84,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BoardRegisterForm(),
+                                builder: (context) => const BoardRegisterScreen(),
                               )))
                           : Container(),
                       isLogin

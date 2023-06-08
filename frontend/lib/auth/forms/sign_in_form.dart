@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/text_form_fields/text_form_field_email.dart';
-import 'package:frontend/components/text_form_fields/text_form_field_password.dart';
 import 'package:frontend/utility/long_button_container.dart';
 
-import '../../api/spring_member_api.dart';
+import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/text_form_fields/text_form_field_email.dart';
+import '../../widgets/text_form_fields/text_form_field_password.dart';
+import '../api/spring_member_api.dart';
 import '../../utility/size.dart';
 import '../../utility/providers/user_data_provider.dart';
-import '../custom_alert_dialog.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);

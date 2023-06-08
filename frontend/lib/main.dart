@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/boards/board_list_page_ask.dart';
-import 'package:frontend/pages/boards/board_list_page_free.dart';
-import 'package:frontend/pages/boards/board_list_page_notice.dart';
-import 'package:frontend/pages/boards/board_list_page_recipe.dart';
-import 'package:frontend/pages/home_page.dart';
-import 'package:frontend/pages/my_page.dart';
-import 'package:frontend/pages/sign_in_page.dart';
-import 'package:frontend/pages/sign_up_complete_page.dart';
-import 'package:frontend/pages/sign_up_page.dart';
+import 'package:frontend/board/screens/board_list_page_ask.dart';
+import 'package:frontend/board/screens/board_list_page_free.dart';
+import 'package:frontend/board/screens/board_list_page_notice.dart';
+import 'package:frontend/board/screens/board_list_page_recipe.dart';
+import 'package:frontend/user/screens/my_page_screen.dart';
+import 'package:frontend/auth/screens/sign_in_screen.dart';
+import 'package:frontend/auth/screens/sign_up_complete_screen.dart';
+import 'package:frontend/auth/screens/sign_up_screen.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:frontend/utility/providers/board_list_provider.dart';
 import 'package:frontend/utility/providers/user_data_provider.dart';
 import 'package:provider/provider.dart';
+
+import 'home/home_screen.dart';
 
 void main() {
   runApp(
@@ -47,15 +48,15 @@ class MyApp extends StatelessWidget {
         title: 'HOME ALONE',
         initialRoute: "/home",
         routes: {
-        "/sign-up": (context) => SignUpPage(),
-        "/home": (context) => HomePage(),
-        "/sign-in": (context) => SignInPage(),
-        "/sign-up-complete": (context) =>SignUpCompletePage(),
+        "/sign-up": (context) => SignUpScreen(),
+        "/home": (context) => HomeScreen(),
+        "/sign-in": (context) => SignInScreen(),
+        "/sign-up-complete": (context) =>SignUpCompleteScreen(),
         "/board-list-free": (context) => BoardListPageFree(),
         "/board-list-ask": (context) => BoardListPageAsk(),
         "/board-list-recipe": (context) => BoardListPageRecipe(),
         "/board-list-notice": (context) => BoardListPageNotice(),
-          "/my-page": (context) => MyPage(),
+          "/my-page": (context) => MyPageScreen(),
         },
       ),
     );

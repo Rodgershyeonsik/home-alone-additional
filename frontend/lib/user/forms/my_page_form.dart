@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/text_form_fields/text_form_field_nickname.dart';
 import 'package:frontend/utility/long_button_container.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/spring_member_api.dart';
+import '../../auth/api/spring_member_api.dart';
 import '../../utility/size.dart';
 import '../../utility/providers/user_data_provider.dart';
-import '../custom_alert_dialog.dart';
+import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/text_form_fields/text_form_field_nickname.dart';
 
 class MyPageForm extends StatefulWidget {
   const MyPageForm({Key? key}) : super(key: key);

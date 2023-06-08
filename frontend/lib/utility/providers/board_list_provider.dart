@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api/spring_board_api.dart';
+import 'package:frontend/board/api/spring_board_api.dart';
 import 'package:frontend/utility/custom_enums.dart';
 
-import '../../api/board.dart';
+import '../../board/api/board.dart';
 
 class BoardListProvider extends ChangeNotifier{
   List<Board> _boards = [];

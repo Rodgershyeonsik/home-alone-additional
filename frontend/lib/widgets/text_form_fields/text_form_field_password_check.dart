@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/forms/sign_up_form.dart';
+import 'package:frontend/auth/forms/sign_up_form.dart';
 
 import '../../utility/size.dart';
 

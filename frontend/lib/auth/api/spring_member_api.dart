@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
-import '../utility/http_uri.dart';
+import '../../utility/http_uri.dart';
 
 class SpringMemberApi {
   Future<bool?> emailCheck ( String email ) async {

@@ -4,8 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:frontend/utility/providers/board_list_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/board.dart';
-import '../../pages/boards/board_detail_screen.dart';
+import '../api/board.dart';
+import '../screens/board_detail_screen.dart';
 import '../../utility/custom_enums.dart';
 
 class BoardListView extends StatefulWidget {

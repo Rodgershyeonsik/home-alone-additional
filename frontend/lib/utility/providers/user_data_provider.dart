@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/api/spring_member_api.dart';
+import 'package:frontend/auth/api/spring_member_api.dart';
 
 class UserDataProvider extends ChangeNotifier {
   static const FlutterSecureStorage storage = FlutterSecureStorage();

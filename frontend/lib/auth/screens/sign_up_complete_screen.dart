@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/buttons/navigation_button.dart';
+import '../../utility/size.dart';
+import '../../widgets/buttons/navigation_button.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/logo.dart';
 
-import '../components/custom_app_bar.dart';
-import '../components/logo.dart';
-import '../utility/size.dart';
-
-class SignUpCompletePage extends StatelessWidget {
-  const SignUpCompletePage({Key? key}) : super(key: key);
+class SignUpCompleteScreen extends StatelessWidget {
+  const SignUpCompleteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,22 +14,22 @@ class SignUpCompletePage extends StatelessWidget {
         appBar: CommonAppBar(title: "HOME ALONE"),
         body: Container(
           padding: EdgeInsets.all(16),
-            child: Center(
+            child: const Center(
               child: Column (
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: small_gap,),
-                  const Logo(title: "회원 가입 완료",),
-                  const SizedBox(height: large_gap,),
-                  const Text("축하합니다! \n 회원 가입이 완료되었습니다!",
+                  SizedBox(height: small_gap,),
+                  Logo(title: "회원 가입 완료",),
+                  SizedBox(height: large_gap,),
+                  Text("축하합니다! \n 회원 가입이 완료되었습니다!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
                       )),
-                  const SizedBox(height: large_gap,),
+                  SizedBox(height: large_gap,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       NavigationButton(buttonText: "로그인", route:"/sign-in"),
                       SizedBox(width: small_gap,),
                       NavigationButton(buttonText: "홈화면", route:"/home"),

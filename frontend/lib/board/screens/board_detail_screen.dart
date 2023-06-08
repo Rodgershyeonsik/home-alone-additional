@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/utility/long_button_container.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/board.dart';
+import '../api/board.dart';
 import '../../utility/providers/user_data_provider.dart';
 import 'board_modify_screen.dart';
 

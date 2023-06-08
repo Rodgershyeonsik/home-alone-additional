@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/forms/sign_up_form.dart';
+import 'package:frontend/auth/forms/sign_up_form.dart';
 
 import '../../utility/size.dart';
 import '../../utility/validate.dart';
 
-class TextFormFieldEmail extends StatefulWidget {
-  const TextFormFieldEmail({Key? key, required this.controller}) : super(key: key);
+class TextFormFieldNickname extends StatefulWidget {
+  const TextFormFieldNickname({Key? key, required this.controller}) : super(key: key);
   final TextEditingController controller;
 
   @override
-  State<TextFormFieldEmail> createState() => _TextFormFieldEmailState();
+  State<TextFormFieldNickname> createState() => _TextFormFieldNicknameState();
 }
 
-class _TextFormFieldEmailState extends State<TextFormFieldEmail> {
+class _TextFormFieldNicknameState extends State<TextFormFieldNickname> {
 
   @override
   Widget build(BuildContext context) {
@@ -21,17 +21,18 @@ class _TextFormFieldEmailState extends State<TextFormFieldEmail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("이메일"),
+        const Text("닉네임"),
         const SizedBox(height: small_gap,),
         TextFormField(
           controller: widget.controller,
-          validator: (value) => CheckValidate().validateEmail(value!),
+          validator: (value) => CheckValidate().
+          validateNickname(value!),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           onChanged: (text) {
-            form?.emailPass = false;
+            form?.nicknamePass = false;
           },
           decoration: InputDecoration(
-            hintText: "Enter email",
+            hintText: "Enter nickname",
             enabledBorder:
             OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
             focusedBorder:

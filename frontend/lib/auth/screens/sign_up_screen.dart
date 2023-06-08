@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/custom_app_bar.dart';
-import '../components/custom_drawer.dart';
-import '../components/forms/sign_up_form.dart';
-import '../components/logo.dart';
-import '../utility/size.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/custom_drawer.dart';
+import '../../widgets/logo.dart';
+import '../forms/sign_up_form.dart';
+import '../../utility/size.dart';
 
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
