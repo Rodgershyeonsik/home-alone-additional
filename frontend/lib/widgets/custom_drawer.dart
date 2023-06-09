@@ -18,40 +18,41 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late bool isLogin;
 
   @override
+  void initState() {
+    super.initState();
+    var authToken = Provider.of<UserDataProvider>(context, listen: false).authToken;
+    authToken != null ? isLogin = true : isLogin = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<UserDataProvider>(
       builder: (context, provider, widget){
-        return FutureBuilder(
-          future: provider.setUserData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              provider.authToken != null ? isLogin = true : isLogin = false;
-
               return Drawer(
                   child: Column(
                     children: [
                       isLogin
                           ? UserAccountsDrawerHeader(
-                        decoration: BoxDecoration(
-                          color: MainColor.mainColor
-                        ),
-                          accountName: Text(provider.nickname!),
-                          accountEmail: Text(provider.email!))
+                            decoration: BoxDecoration(
+                              color: MainColor.mainColor
+                                ),
+                              accountName: Text(provider.nickname!),
+                              accountEmail: Text(provider.email!))
                           : DrawerHeader(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () => Navigator.pushNamed(context, "/sign-in"),
-                                child: const Text("로그인"),
-                              ),
-                              SizedBox(
-                                height: 80,
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ]),
-                        decoration: BoxDecoration(
-                            color: MainColor.mainColor
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => Navigator.pushNamed(context, "/sign-in"),
+                                    child: const Text("로그인"),
+                                  ),
+                                  SizedBox(
+                                    height: 80,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                ]),
+                            decoration: BoxDecoration(
+                                color: MainColor.mainColor
                         ),
                       ),
                       ListTile(
@@ -80,8 +81,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       isLogin
                           ? ListTile(
-                          title: Text("게시물 작성하기"),
-                          onTap: () => Navigator.push(
+                            title: Text("게시물 작성하기"),
+                            onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const BoardRegisterScreen(),
@@ -89,8 +90,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           : Container(),
                       isLogin
                           ? ListTile(
-                          title: Text("내 정보 보기"),
-                          onTap: () => Navigator.pushNamed(context, "/my-page"))
+                            title: Text("내 정보 보기"),
+                            onTap: () => Navigator.pushNamed(context, "/my-page"))
                           : Container(),
                       ListTile(
                         title: Text("공지사항"),
@@ -98,28 +99,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       isLogin
                           ? ListTile(
-                        title: Text("로그아웃"),
-                        onTap: () async {
-                          await SpringMemberApi()
-                              .requestSignOut(provider.authToken);
-                          await UserDataProvider.storage.deleteAll();
-                          debugPrint("storage 삭제");
-                          setState(() {
-                            isLogin = false;
-                          });
-                          showResultDialog(context, "로그아웃", "로그아웃이 완료되었습니다.");
-                        },
+                            title: Text("로그아웃"),
+                            onTap: () async {
+                              await SpringMemberApi()
+                                  .requestSignOut(provider.authToken);
+                              await UserDataProvider.storage.deleteAll();
+                              await provider.setUserData();
+                              debugPrint("storage 삭제");
+                              setState(() {
+                                isLogin = false;
+                              });
+                              showResultDialog(context, "로그아웃", "로그아웃이 완료되었습니다.");
+                            },
                       )
                           : Container()
                     ],
                   ));
-            } else {
-              return const CircularProgressIndicator();
-            }
           },
         );
-      }
-    );
   }
 
   void showResultDialog(BuildContext context, String title, String alertMsg) {
