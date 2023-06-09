@@ -6,36 +6,36 @@ import 'package:frontend/utility/custom_enums.dart';
 import '../../board/api/board.dart';
 
 class BoardListProvider extends ChangeNotifier{
+  bool _isLoading = false;
   List<Board> _boards = [];
+
+  bool get isLoading => _isLoading;
   List<Board> get boards => _boards;
 
   Future<void> loadEveryBoards() async {
-    List<Board>? boardList = await SpringBoardApi().requestEveryBoardList();
-    _boards = boardList!;
+    _isLoading = true;
+    _boards = await SpringBoardApi().requestEveryBoardList();
+    _isLoading = false;
     notifyListeners();
   }
 
   Future<void> loadFreeBoards() async {
-    List<Board>? boardList = await SpringBoardApi().requestSpecificBoardList("자유");
-    _boards = boardList!;
+    _boards = await SpringBoardApi().requestSpecificBoardList("자유");
     notifyListeners();
   }
 
   Future<void> loadAskBoards() async {
-    List<Board>? boardList = await SpringBoardApi().requestSpecificBoardList("질문");
-    _boards = boardList!;
+    _boards = await SpringBoardApi().requestSpecificBoardList("질문");
     notifyListeners();
   }
 
-  loadRecipeBoards() async {
-    List<Board>? boardList = await SpringBoardApi().requestSpecificBoardList("1인분");
-    _boards = boardList!;
+  Future<void> loadRecipeBoards() async {
+    _boards = await SpringBoardApi().requestSpecificBoardList("1인분");
     notifyListeners();
   }
 
-  loadNoticeBoards() async {
-    List<Board>? boardList = await SpringBoardApi().requestSpecificBoardList("공지");
-    _boards = boardList!;
+  Future<void> loadNoticeBoards() async {
+    _boards = await SpringBoardApi().requestSpecificBoardList("공지");
     notifyListeners();
   }
 

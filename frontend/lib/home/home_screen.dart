@@ -19,12 +19,18 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: const CommonAppBar(title: "HOME ALONE"),
       body: Consumer<BoardListProvider>(
-          builder: (context, provider, widget){
-            if (provider.boards.isNotEmpty) {
-              return BoardListView(boards: provider.boards, listTitle: "전체 게시글 목록",);
-            }
-            return const Center(
-              child: Text("존재하는 게시물이 없습니다!"),
+          builder: (context, provider, widget) {
+            return
+              provider.isLoading ?
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.grey,
+                ),
+              )
+                  : provider.boards.isNotEmpty
+                      ? BoardListView(boards: provider.boards, listTitle: "전체 게시글 목록")
+                      : const Center(
+                        child: Text("게시물이 존재하지 않습니다.")
             );
           },
         ),

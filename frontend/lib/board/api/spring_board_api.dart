@@ -64,7 +64,7 @@ class SpringBoardApi{
     }
   }
 
-  Future<List<Board>?> requestEveryBoardList() async {
+  Future<List<Board>> requestEveryBoardList() async {
     print('보드 리스트 요청');
 
     var response = await http.get(Uri.http(HttpUri.home, '/board/list'));
@@ -84,7 +84,7 @@ class SpringBoardApi{
     }
   }
 
-  Future<List<Board>?> requestSpecificBoardList(String categoryName) async {
+  Future<List<Board>> requestSpecificBoardList(String categoryName) async {
 
     var response = await http.get(
         Uri.http(HttpUri.home, '/board/list/$categoryName')
