@@ -83,7 +83,7 @@ public class BoardServiceImpl implements BoardService{
                                             b.getRegDate() );
             responses.add(target);
         }
-        // System.out.println("board list: " + boardRepository.findAll(Sort.by(Sort.Direction.DESC, "boardNo")));
+
         return responses;
     }
 
@@ -91,12 +91,12 @@ public class BoardServiceImpl implements BoardService{
     public List<BoardResponse> specificBoardList(String categoryName) {
         BoardCategory boardCategory;
         List<BoardResponse> responses = new ArrayList<>();
-        List<Board> boards = new ArrayList<>();
+        List<Board> boards;
 
         Optional<BoardCategory> maybeCategory = categoryRepository.findByCategoryName(categoryName);
         if(maybeCategory.isPresent()) {
             boardCategory = maybeCategory.get();
-            // System.out.println(boardRepository.findAllBoardsByCategoryId(category.getCategoryId()));
+
             boards = boardRepository.findAllBoardsByCategoryId(boardCategory.getCategoryId(), Sort.by(Sort.Direction.DESC, "boardNo"));
 
             for(Board b : boards) {
@@ -133,7 +133,6 @@ public class BoardServiceImpl implements BoardService{
                                             board.getBoardCategory().getCategoryName(),
                                             board.getRegDate() );
 
-        // log.info(String.valueOf(maybeBoard.get()));
         return responseBoard;
     }
 
