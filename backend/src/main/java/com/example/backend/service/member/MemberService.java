@@ -1,7 +1,7 @@
 package com.example.backend.service.member;
 
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
-import com.example.backend.service.member.request.MemberModifyRequest;
+import com.example.backend.service.member.request.ChangeNicknameRequest;
 import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
@@ -18,7 +18,7 @@ public interface MemberService {
 
     MemberDataResponse userData(FlutterUserTokenRequest request);
 
-    Boolean modifyUserData(MemberModifyRequest request);
+    Boolean changeUserNickname(ChangeNicknameRequest request);
 
     Boolean removeMember(FlutterUserTokenRequest request);
 

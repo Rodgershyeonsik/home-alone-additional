@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class MemberModifyRequest {
+public class ChangeNicknameRequest {
     private String userToken;
-    private String modifyNickname;
+    private String newNickname;
 }

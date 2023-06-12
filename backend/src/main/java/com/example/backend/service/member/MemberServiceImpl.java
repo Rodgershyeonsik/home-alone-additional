@@ -8,7 +8,7 @@ import com.example.backend.repository.AuthenticationRepository;
 import com.example.backend.repository.BoardRepository;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
-import com.example.backend.service.member.request.MemberModifyRequest;
+import com.example.backend.service.member.request.ChangeNicknameRequest;
 import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional
 public class MemberServiceImpl implements MemberService{
 
     @Autowired
@@ -44,22 +46,14 @@ public class MemberServiceImpl implements MemberService{
     public Boolean emailValidation(String email) {
         Optional<Member> maybeMember = memberRepository.findByEmail(email);
 
-        if (maybeMember.isPresent()) {
-            return false;
-        }
-
-        return true;
+        return maybeMember.isEmpty();
     }
 
     @Override
     public Boolean nicknameValidation(String nickname) {
         Optional<Member> maybeMember = memberRepository.findByNickname(nickname);
 
-        if (maybeMember.isPresent()) {
-            return false;
-        }
-
-        return true;
+        return maybeMember.isEmpty();
     }
 
     @Override
@@ -140,20 +134,32 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public Boolean modifyUserData(MemberModifyRequest request) {
+    public Boolean changeUserNickname (ChangeNicknameRequest request) {
         Long memberId = redisService.getValueByKey(request.getUserToken());
 
         if (memberId != null) {
             Optional<Member> maybeMember = memberRepository.findById(memberId);
+
             if (maybeMember.isPresent()) {
                 Member member = maybeMember.get();
-                member.setNickname(request.getModifyNickname());
+                member.setNickname(request.getNewNickname());
                 memberRepository.save(member);
 
+                List<Board> usersBoards = maybeMember.get().getBoards();
+
+                for(Board b : usersBoards) {
+                    b.setWriter(request.getNewNickname());
+                    boardRepository.save(b);
+                }
                 return true;
+            } else {
+                log.info("여기가 나오면 안되는딩? 세션은 있는데 멤버거 없음.");
+                return false;
             }
         }
-        throw new RuntimeException("로그인 중인 사용자를 찾을 수 없음!");
+
+        log.info("로그인 세션 없음");
+        return false;
     }
 
     @Override
@@ -163,12 +169,10 @@ public class MemberServiceImpl implements MemberService{
 
             final Optional<Authentication> maybeAuth = authenticationRepository.findByMemberId(memberId);
             if (maybeAuth.isPresent()) {
-                maybeAuth.get().getId();
                 authenticationRepository.deleteById(maybeAuth.get().getId());
             }
 
-            List<Board> boards = new ArrayList<>();
-            boards = boardRepository.findAllBoardsByMemberId(memberId, Sort.by(Sort.Direction.DESC, "boardNo"));
+            List<Board> boards = boardRepository.findAllBoardsByMemberId(memberId, Sort.by(Sort.Direction.DESC, "boardNo"));
 
             for(Board b: boards) {
                 boardRepository.deleteById(b.getBoardNo());

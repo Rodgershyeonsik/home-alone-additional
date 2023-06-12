@@ -2,7 +2,7 @@ package com.example.backend.controller.member;
 
 import com.example.backend.service.member.MemberService;
 import com.example.backend.service.member.request.FlutterUserTokenRequest;
-import com.example.backend.service.member.request.MemberModifyRequest;
+import com.example.backend.service.member.request.ChangeNicknameRequest;
 import com.example.backend.service.member.request.SignUpRequest;
 import com.example.backend.service.member.request.SignInRequest;
 import com.example.backend.service.member.response.MemberDataResponse;
@@ -62,11 +62,11 @@ public class MemberController {
         return service.userData(request);
     }
 
-    @PutMapping("/data-modify")
-    public Boolean modifyUserData(@RequestBody MemberModifyRequest request) {
-        log.info("modifyUserData: " + request);
+    @PutMapping("/change-nickname")
+    public Boolean changeUserNickname(@RequestBody ChangeNicknameRequest request) {
+        log.info("changeUserNickname: " + request);
 
-        return service.modifyUserData(request);
+        return service.changeUserNickname(request);
     }
 
     @DeleteMapping("/unregister")
