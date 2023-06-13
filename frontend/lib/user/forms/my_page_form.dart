@@ -13,16 +13,16 @@ class MyPageForm extends StatefulWidget {
   const MyPageForm({Key? key}) : super(key: key);
 
   @override
-  State<MyPageForm> createState() => _MyPageFormState();
+  State<MyPageForm> createState() => MyPageFormState();
 }
 
-class _MyPageFormState extends State<MyPageForm> {
+class MyPageFormState extends State<MyPageForm> {
 
   late TextEditingController nicknameController = TextEditingController();
   late String newNickname;
   bool? nicknamePass;
 
-  late bool? res;
+  late bool res;
 
   @override
   void initState() {
@@ -91,13 +91,40 @@ class _MyPageFormState extends State<MyPageForm> {
                                 nicknamePass == true) {
                               res = await SpringMemberApi().
                               requestModifyUserData(
-                                  ModifyUserDataRequest(provider.authToken!,
+                                  ChangeNicknameRequest(provider.authToken!,
                                       newNickname));
-                              await UserDataProvider.storage.write(
-                                  key: 'nickname', value: newNickname);
+
+                              if(res) {
+                                await UserDataProvider.storage.write(key: 'nickname', value: newNickname);
+                                provider.changeNickname(newNickname);
+                                showResultDialog(context, "알림", "닉네임이 변경되었습니다.");
+                                } else {
+                                await UserDataProvider.storage.deleteAll();
+
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(25.0))
+                                          ),
+                                          content: const Text(
+                                              "로그인이 만료되었습니다.\n로그인 후 다시 시도해주세요."
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () async {
+                                                  await provider.setUserData();
+                                                  Navigator.pushNamed(context, "/sign-in");
+                                                }, child: const Text("로그인 하기"))
+                                          ],
+                                        ));
+                              }
+                            } else {
+                              showResultDialog(context, "알림", "중복 검사 통과 여부를 확인하세요.");
                             }
-                            provider.changeNickname(newNickname);
-                          }, child: const Text("닉네임 변경하기",
+                      },
+                          child: const Text("닉네임 변경하기",
                         style: TextStyle(
                             color: Colors.white
                         ),)),
@@ -111,6 +138,9 @@ class _MyPageFormState extends State<MyPageForm> {
                               context: context,
                               builder: (BuildContext context) =>
                                   AlertDialog(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                                    ),
                                     title: const Text('회원 탈퇴'),
                                     content: const Text('회원 탈퇴 하시겠습니까?'),
                                     actions: <Widget>[

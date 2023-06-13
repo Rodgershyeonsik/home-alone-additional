@@ -12,20 +12,25 @@ class MyPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-          appBar: CommonAppBar(title: "MY PAGE"),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-              child: ListView(
-                children: const [
-                  SizedBox(height: small_gap,),
-                  Logo(title: "내 정보",),
-                  SizedBox(height: small_gap,),
-                  MyPageForm(),
-                ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+            appBar: CommonAppBar(title: "MY PAGE"),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  children: const [
+                    SizedBox(height: small_gap,),
+                    Logo(title: "내 정보",),
+                    SizedBox(height: small_gap,),
+                    MyPageForm(),
+                  ],
+                ),
               ),
-            ),
-        drawer: CustomDrawer()
-      );
+          drawer: CustomDrawer()
+        ),
+    );
   }
 }

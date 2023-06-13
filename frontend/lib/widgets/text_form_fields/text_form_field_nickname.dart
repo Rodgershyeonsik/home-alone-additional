@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/auth/forms/sign_up_form.dart';
+import 'package:frontend/user/forms/my_page_form.dart';
 
 import '../../utility/size.dart';
 import '../../utility/validate.dart';
@@ -17,7 +18,8 @@ class _TextFormFieldNicknameState extends State<TextFormFieldNickname> {
 
   @override
   Widget build(BuildContext context) {
-    SignUpFormState? form = context.findAncestorStateOfType<SignUpFormState>();
+    SignUpFormState? signInForm = context.findAncestorStateOfType<SignUpFormState>();
+    MyPageFormState? myPageForm = context.findAncestorStateOfType<MyPageFormState>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -29,7 +31,8 @@ class _TextFormFieldNicknameState extends State<TextFormFieldNickname> {
           validateNickname(value!),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           onChanged: (text) {
-            form?.nicknamePass = false;
+            signInForm?.nicknamePass = false;
+            myPageForm?.nicknamePass = false;
           },
           decoration: InputDecoration(
             hintText: "Enter nickname",

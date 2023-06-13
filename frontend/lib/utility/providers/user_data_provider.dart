@@ -16,11 +16,11 @@ class UserDataProvider extends ChangeNotifier {
   Future<void> setUserData() async {
     debugPrint("setUserData 시작");
     _authToken = await storage.read(key: 'authToken');
-    debugPrint("토큰 읽음");
+    debugPrint("토큰: " + _authToken.toString());
     _email = await storage.read(key: 'email');
-    debugPrint("email 읽음");
+    debugPrint("email: " + _email.toString());
     _nickname = await storage.read(key: 'nickname');
-    debugPrint("닉넴 읽음");
+    debugPrint("닉넴: " + _nickname.toString());
   }
 
   void changeNickname(String newNickname) {
