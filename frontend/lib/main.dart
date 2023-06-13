@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         ),
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
-              primary: Colors.black
+              foregroundColor: Colors.black
             )
           )
         ),
