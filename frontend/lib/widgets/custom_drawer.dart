@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../board/screens/board_register_screen.dart';
 import '../utility/providers/user_data_provider.dart';
-import 'custom_alert_dialog.dart';
+import 'result_alert_dialog.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({Key? key}) : super(key: key);
@@ -16,12 +16,13 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawerState extends State<CustomDrawer> {
   late bool isLogin;
+  late UserDataProvider userDataProvider;
 
   @override
   void initState() {
     super.initState();
-    var authToken = Provider.of<UserDataProvider>(context, listen: false).authToken;
-    authToken != null ? isLogin = true : isLogin = false;
+    userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+    userDataProvider.authToken != null ? isLogin = true : isLogin = false;
   }
 
   @override
@@ -100,16 +101,37 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       isLogin
                           ? ListTile(
                             title: Text("로그아웃"),
-                            onTap: () async {
-                              await SpringMemberApi()
-                                  .requestSignOut(provider.authToken);
-                              await UserDataProvider.storage.deleteAll();
-                              await provider.setUserData();
-                              debugPrint("storage 삭제");
-                              setState(() {
-                                isLogin = false;
-                              });
-                              showResultDialog(context, "로그아웃", "로그아웃이 완료되었습니다.");
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                    AlertDialog(
+                                     title: Text("알림"),
+                                      content: Text("로그아웃 하시겠습니까?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            }, child: Text("아니오")),
+                                        TextButton(
+                                          onPressed: () async {
+                                            await signOut();
+                                            setState(() {
+                                              isLogin = false;
+                                            });
+                                            Navigator.pushNamed(context, '/home');
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) =>
+                                                    const ResultAlertDialog(alertMsg: "로그아웃이 완료되었습니다."));
+                                          },
+                                          child: Text("네")
+                                        )
+                                      ],
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                                  )
+                              );
                             },
                       )
                           : Container()
@@ -119,10 +141,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
         );
   }
 
-  void showResultDialog(BuildContext context, String title, String alertMsg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-            CustomAlertDialog(title: title, alertMsg: alertMsg));
+  Future<void> signOut() async {
+    await SpringMemberApi()
+        .requestSignOut(userDataProvider.authToken);
+    await UserDataProvider.storage.deleteAll();
+    debugPrint("storage 삭제");
   }
+
 }
