@@ -1,19 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomAlertDialog extends StatelessWidget {
-  const CustomAlertDialog({Key? key, required this.title, required this.alertMsg})
+class ResultAlertDialog extends StatelessWidget {
+  const ResultAlertDialog({Key? key, required this.alertMsg})
       : super(key: key);
 
   final String alertMsg;
-  final String title;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25.0))),
-        title: Text(title),
+        title: const Text('알림'),
         content: Text(alertMsg),
         actions: <Widget>[
           TextButton(

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../auth/api/spring_member_api.dart';
 import '../../utility/size.dart';
 import '../../utility/providers/user_data_provider.dart';
-import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/result_alert_dialog.dart';
 import '../../widgets/text_form_fields/text_form_field_nickname.dart';
 
 class MyPageForm extends StatefulWidget {
@@ -72,11 +72,17 @@ class MyPageFormState extends State<MyPageForm> {
                               "nicknamePass: " + nicknamePass.toString());
 
                           if (nicknamePass == true) {
-                            showResultDialog(
-                                context, "닉네임 중복 확인", "사용 가능한 닉네임입니다.");
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                const ResultAlertDialog(alertMsg: "사용 가능한 닉네임입니다.")
+                            );
                           } else {
-                            showResultDialog(
-                                context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                const ResultAlertDialog(alertMsg: "중복 되는 닉네임입니다.")
+                            );
                           }
                         }, child: const Text("닉네임 중복 확인",
                         style: TextStyle(
@@ -97,7 +103,11 @@ class MyPageFormState extends State<MyPageForm> {
                               if(res) {
                                 await UserDataProvider.storage.write(key: 'nickname', value: newNickname);
                                 provider.changeNickname(newNickname);
-                                showResultDialog(context, "알림", "닉네임이 변경되었습니다.");
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                    const ResultAlertDialog(alertMsg: "닉네임 변경되었습니다.")
+                                );
                                 } else {
                                 await UserDataProvider.storage.deleteAll();
 
@@ -121,7 +131,11 @@ class MyPageFormState extends State<MyPageForm> {
                                         ));
                               }
                             } else {
-                              showResultDialog(context, "알림", "중복 검사 통과 여부를 확인하세요.");
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                  const ResultAlertDialog(alertMsg: "중복 검사 통과 여부를 확인하세요.")
+                              );
                             }
                       },
                           child: const Text("닉네임 변경하기",
@@ -175,12 +189,5 @@ class MyPageFormState extends State<MyPageForm> {
             }
           )
         );
-  }
-
-  void showResultDialog(BuildContext context, String title, String alertMsg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-            CustomAlertDialog(title: title, alertMsg: alertMsg));
   }
 }

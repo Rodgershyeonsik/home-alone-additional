@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/result_alert_dialog.dart';
 import '../../widgets/text_form_fields/text_form_field_for_board.dart';
 import '../api/board.dart';
 import '../api/spring_board_api.dart';
@@ -77,7 +77,10 @@ class _BoardModifyFormState extends State<BoardModifyForm> {
                         ),
                       );
                     } else {
-                      showResultDialog(context, "게시물 등록 실패", "제목과 내용을 작성해주세요!");
+                      showDialog( context: context,
+                        builder: (BuildContext context) =>
+                            const ResultAlertDialog(alertMsg: "제목과 내용을 모두 입력해주세요.")
+                      );
                     }
                   },
                   child: Text("게시글 수정하기",
@@ -100,12 +103,6 @@ class _BoardModifyFormState extends State<BoardModifyForm> {
               ),
             )],
         )
-    );
-  }
-  void showResultDialog(BuildContext context, String title, String alertMsg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => CustomAlertDialog(title: title, alertMsg: alertMsg)
     );
   }
 

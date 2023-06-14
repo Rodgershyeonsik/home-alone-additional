@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../utility/size.dart';
 import '../../widgets/buttons/category_drop-down_btn.dart';
-import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/result_alert_dialog.dart';
 import '../../widgets/text_form_fields/text_form_field_for_board.dart';
 
 class BoardRegisterForm extends StatefulWidget {
@@ -73,7 +73,11 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
                           category.setDefaultCategory();
                           moveToList(boardCategoryName);
                         } else {
-                          showResultDialog(context, "게시물 등록 실패", "제목과 내용을 작성해주세요!");
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  const ResultAlertDialog(alertMsg: "제목과 내용을 모두 작성해주세요.")
+                          );
                         }
                       },
                       child: Text("게시글 등록하기",
@@ -87,13 +91,6 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
           ],
         )
       );
-  }
-
-  void showResultDialog(BuildContext context, String title, String alertMsg) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => CustomAlertDialog(title: title, alertMsg: alertMsg)
-    );
   }
 
   void moveToList(String category) {

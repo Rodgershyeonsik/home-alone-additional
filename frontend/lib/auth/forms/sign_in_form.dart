@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/utility/long_button_container.dart';
 
-import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/result_alert_dialog.dart';
 import '../../widgets/text_form_fields/text_form_field_email.dart';
 import '../../widgets/text_form_fields/text_form_field_password.dart';
 import '../api/spring_member_api.dart';
@@ -115,6 +115,6 @@ class _SignInFormState extends State<SignInForm> {
     showDialog(
         context: context,
         builder: (BuildContext context) =>
-            CustomAlertDialog(title: title, alertMsg: alertMsg));
+            ResultAlertDialog(alertMsg: alertMsg));
   }
 }

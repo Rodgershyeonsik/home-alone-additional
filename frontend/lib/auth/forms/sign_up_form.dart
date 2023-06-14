@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/utility/long_button_container.dart';
 
-import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/result_alert_dialog.dart';
 import '../../widgets/text_form_fields/text_form_field_email.dart';
 import '../../widgets/text_form_fields/text_form_field_nickname.dart';
 import '../../widgets/text_form_fields/text_form_field_password.dart';
@@ -70,11 +70,23 @@ class SignUpFormState extends State<SignUpForm> {
                   debugPrint("emailPass: " + emailPass.toString());
 
                   if(emailPass == true) {
-                    showResultDialog(context, "이메일 중복 확인", "사용 가능한 이메일입니다.");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                        const ResultAlertDialog(alertMsg: "사용 가능한 이메일입니다.")
+                    );
                     } else if(emailPass == false){
-                    showResultDialog(context, "이메일 중복 확인", "중복 되는 이메일입니다.");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                        const ResultAlertDialog(alertMsg: "중복되는 이메일입니다.")
+                    );
                   } else {
-                    showResultDialog(context, "통신 오류", "통신이 원활하지 않습니다. 다시 시도해주세요");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                        const ResultAlertDialog(alertMsg: "통신이 원활하지 않습니다. 다시 시도해주세요.")
+                    );
                   }
 
                 }, child: const Text("이메일 중복 확인",
@@ -93,11 +105,23 @@ class SignUpFormState extends State<SignUpForm> {
                   debugPrint("nicknamePass: " + nicknamePass.toString());
 
                   if(nicknamePass == true) {
-                    showResultDialog(context, "닉네임 중복 확인", "사용 가능한 닉네임입니다.");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                        const ResultAlertDialog(alertMsg: "사용 가능한 닉네임입니다.")
+                    );
                   } else if(nicknamePass == false) {
-                    showResultDialog(context, "닉네임 중복 확인", "중복 되는 닉네임입니다.");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                        const ResultAlertDialog(alertMsg: "중복 되는 닉네임입니다.")
+                    );
                   } else {
-                    showResultDialog(context, "통신 오류", "통신이 원활하지 않습니다. 다시 시도해주세요");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                        const ResultAlertDialog(alertMsg: "통신이 원활하지 않습니다. 다시 시도해주세요.")
+                    );
                   }
 
                 }, child: const Text("닉네임 중복 확인",
@@ -120,14 +144,30 @@ class SignUpFormState extends State<SignUpForm> {
                       if(signUpSuccess == true) {
                         Navigator.pushNamed(context, "/sign-up-complete");
                       } else {
-                        showResultDialog(context, "통신 오류", "통신이 원활하지 않습니다. 다시 시도해주세요");
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                const ResultAlertDialog(alertMsg: "통신이 원활하지 않습니다. 다시 시도해주세요")
+                        );
                       }
                     } else if(emailPass == true && nicknamePass != true) {
-                      showResultDialog(context, "유효하지 않은 값 확인", "닉네임 중복 여부를 확인하세요!");
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                          const ResultAlertDialog(alertMsg: "닉네임 중복 여부를 확인하세요!")
+                      );
                     } else if(emailPass != true && nicknamePass == true) {
-                      showResultDialog(context, "유효하지 않은 값 확인", "이메일 중복 여부를 확인하세요!");
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                          const ResultAlertDialog(alertMsg: "이메일 중복 여부를 확인하세요!")
+                      );
                     } else {
-                      showResultDialog(context, "유효하지 않은 값 확인", "이메일, 닉네임 중복 여부를 확인하세요!");
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                          const ResultAlertDialog(alertMsg: "이메일, 닉네임 중복 여부를 확인하세요!")
+                      );
                     }
                   }
                 },
@@ -140,12 +180,5 @@ class SignUpFormState extends State<SignUpForm> {
           ],
         )
     );
-  }
-
-  void showResultDialog(BuildContext context, String title, String alertMsg) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => CustomAlertDialog(title: title, alertMsg: alertMsg)
-      );
   }
 }
