@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/board/widgets/board_list_view.dart';
+import 'package:frontend/utility/custom_enums.dart';
 import 'package:provider/provider.dart';
 
 import '../../utility/providers/board_list_provider.dart';
@@ -21,8 +22,11 @@ class BoardListPageFree extends StatelessWidget {
         drawer: CustomDrawer(),
         body: Consumer<BoardListProvider>(
           builder: (context, provider, widget){
-            if (provider.boards != null && provider.boards.length > 0) {
-              return BoardListView(boards: provider.boards, listTitle: "게시물 목록",);
+            if (provider.boards.isNotEmpty) {
+              return BoardListView(
+                boards: provider.boards,
+                listTitle: "게시물 목록",
+                category: BoardCategory.free,);
             }
             // 데이터가 없으면 CircularProgressIndicator 수행(로딩)
             return Center(

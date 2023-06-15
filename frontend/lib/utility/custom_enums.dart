@@ -7,5 +7,6 @@ enum SortBy {
 });
 
   final String sortValue;
-
 }
+
+enum BoardCategory { all, free, recipe, ask, notice }

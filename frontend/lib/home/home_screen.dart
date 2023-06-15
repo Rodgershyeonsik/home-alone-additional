@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../board/widgets/board_list_view.dart';
+import '../utility/custom_enums.dart';
 import '../utility/providers/board_list_provider.dart';
 import '../utility/providers/user_data_provider.dart';
 import '../widgets/custom_app_bar.dart';
@@ -28,7 +29,10 @@ class HomeScreen extends StatelessWidget {
                 ),
               )
                   : provider.boards.isNotEmpty
-                      ? BoardListView(boards: provider.boards, listTitle: "전체 게시글 목록")
+                      ? BoardListView(
+                          boards: provider.boards,
+                          listTitle: "전체 게시글 목록",
+                          category: BoardCategory.all,)
                       : const Center(
                         child: Text("게시물이 존재하지 않습니다.")
             );
