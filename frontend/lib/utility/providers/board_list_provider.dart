@@ -50,4 +50,10 @@ class BoardListProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
+
+  void forceLoading() {
+    print('로딩 강제');
+    _isLoading = true;
+    notifyListeners();
+  }
 }

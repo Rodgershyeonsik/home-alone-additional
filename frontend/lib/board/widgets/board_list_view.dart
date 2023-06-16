@@ -9,11 +9,16 @@ import '../screens/board_detail_screen.dart';
 import '../../utility/custom_enums.dart';
 
 class BoardListView extends StatefulWidget {
-  const BoardListView({Key? key, required this.boards, required this.listTitle})
+  const BoardListView(
+      {Key? key,
+      required this.boards,
+      required this.listTitle,
+      required this.category})
       : super(key: key);
 
   final String listTitle;
   final List<Board> boards;
+  final BoardCategory category;
 
   @override
   State<BoardListView> createState() => _BoardListViewState();
@@ -21,9 +26,55 @@ class BoardListView extends StatefulWidget {
 
 class _BoardListViewState extends State<BoardListView> {
   String _sortValue = SortBy.latest.sortValue;
+  final ScrollController _scrollController = ScrollController();
+  late BoardListProvider _boardListProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _boardListProvider = Provider.of<BoardListProvider>(context, listen: false);
+    _scrollController.addListener(() {
+      print('픽셀몇? ' + _scrollController.position.pixels.toString());
+
+      if (_scrollController.position.pixels == 0) {
+        refreshBoardList();
+      }
+    });
+  }
+
+  Future<void> refreshBoardList() async {
+    _boardListProvider.forceLoading();
+    await Future.delayed(const Duration(milliseconds: 500));
+    switch (widget.category) {
+      case BoardCategory.all:
+        _boardListProvider.loadEveryBoards();
+        break;
+      case BoardCategory.free:
+        _boardListProvider.loadFreeBoards();
+        break;
+      case BoardCategory.ask:
+        _boardListProvider.loadAskBoards();
+        break;
+      case BoardCategory.recipe:
+        _boardListProvider.loadRecipeBoards();
+        break;
+      case BoardCategory.notice:
+        _boardListProvider.loadNoticeBoards();
+        break;
+      default:
+        debugPrint("그럴리가 없는데?");
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("빌드됨?");
     return Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
@@ -42,30 +93,32 @@ class _BoardListViewState extends State<BoardListView> {
               ),
             ),
             Expanded(
-                child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(thickness: 1, height: 1),
-                  itemCount: widget.boards.length,
-                  itemBuilder: (BuildContext context, int index) {
+              child: ListView.separated(
+                separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(thickness: 1, height: 1),
+                itemCount: widget.boards.length,
+                itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     title: _makeBoard(widget.boards[index]),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 10.0),
                     onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            BoardDetailScreen(board: widget.boards[index]),
-                      ),
-                    );
-                  },
-                );
-              },
-            ))
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BoardDetailScreen(board: widget.boards[index]),
+                        ),
+                      );
+                    },
+                  );
+                },
+                controller: _scrollController,
+              ),
+            )
           ],
         ));
   }
-
   Widget _buildSortButton(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
