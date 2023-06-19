@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:frontend/utility/providers/board_list_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../refresh_fab.dart';
 import '../api/board.dart';
 import '../screens/board_detail_screen.dart';
 import '../../utility/custom_enums.dart';
@@ -26,20 +27,66 @@ class BoardListView extends StatefulWidget {
 
 class _BoardListViewState extends State<BoardListView> {
   String _sortValue = SortBy.latest.sortValue;
-  final ScrollController _scrollController = ScrollController();
   late BoardListProvider _boardListProvider;
 
   @override
   void initState() {
     super.initState();
     _boardListProvider = Provider.of<BoardListProvider>(context, listen: false);
-    _scrollController.addListener(() {
-      print('픽셀몇? ' + _scrollController.position.pixels.toString());
-
-      if (_scrollController.position.pixels == 0) {
-        refreshBoardList();
-      }
-    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    print("빌드됨?");
+    return Stack(
+      children:[
+        Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  color: Colors.grey[100],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(widget.listTitle,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                      _buildSortButton(context)
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(thickness: 1, height: 1),
+                    itemCount: widget.boards.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: _makeBoard(widget.boards[index]),
+                        contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 10.0),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BoardDetailScreen(board: widget.boards[index]),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                )
+              ],
+            )),
+        RefreshFloatingButton(
+          onPressEvent: () {
+            refreshBoardList();
+          })
+      ]
+    );
   }
 
   Future<void> refreshBoardList() async {
@@ -66,59 +113,6 @@ class _BoardListViewState extends State<BoardListView> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print("빌드됨?");
-    return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              color: Colors.grey[100],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.listTitle,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20)),
-                  _buildSortButton(context)
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(thickness: 1, height: 1),
-                itemCount: widget.boards.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: _makeBoard(widget.boards[index]),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 10.0),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              BoardDetailScreen(board: widget.boards[index]),
-                        ),
-                      );
-                    },
-                  );
-                },
-                controller: _scrollController,
-              ),
-            )
-          ],
-        ));
-  }
   Widget _buildSortButton(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
