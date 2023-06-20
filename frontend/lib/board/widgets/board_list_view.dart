@@ -28,6 +28,7 @@ class BoardListView extends StatefulWidget {
 class _BoardListViewState extends State<BoardListView> {
   String _sortValue = SortBy.latest.sortValue;
   late BoardListProvider _boardListProvider;
+  final positionAdjustment = 60.0;
 
   @override
   void initState() {
@@ -37,55 +38,60 @@ class _BoardListViewState extends State<BoardListView> {
   @override
   Widget build(BuildContext context) {
     print("빌드됨?");
-    return Stack(
-      children:[
-        Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Container(
+    return LayoutBuilder(
+      builder: (context, constrains) {
+        return Stack(
+            children:[
+              Padding(
                   padding: const EdgeInsets.all(10.0),
-                  color: Colors.grey[100],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: [
-                      Text(widget.listTitle,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
-                      _buildSortButton(context)
+                      Container(
+                        padding: const EdgeInsets.all(10.0),
+                        color: Colors.grey[100],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(widget.listTitle,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20)),
+                            _buildSortButton(context)
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.separated(
+                          separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(thickness: 1, height: 1),
+                          itemCount: widget.boards.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                              title: _makeBoard(widget.boards[index]),
+                              contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        BoardDetailScreen(board: widget.boards[index]),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      )
                     ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(thickness: 1, height: 1),
-                    itemCount: widget.boards.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: _makeBoard(widget.boards[index]),
-                        contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 10.0),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  BoardDetailScreen(board: widget.boards[index]),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                )
-              ],
-            )),
-        RefreshFloatingButton(
-          onPressEvent: () {
-            refreshBoardList();
-          })
-      ]
+                  )),
+              RefreshFloatingButton(
+                  max: constrains.maxHeight - positionAdjustment,
+                  onPressEvent: () {
+                    refreshBoardList();
+                  })
+            ]
+        );
+      },
     );
   }
 

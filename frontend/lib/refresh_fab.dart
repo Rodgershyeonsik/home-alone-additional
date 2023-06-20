@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:frontend/utility/main_color.dart';
 
 class RefreshFloatingButton extends StatefulWidget {
-  const RefreshFloatingButton({super.key, required this.onPressEvent});
+  const RefreshFloatingButton({super.key, required this.onPressEvent, required this.max});
 
   @override
   _RefreshFloatingButtonState createState() => _RefreshFloatingButtonState();
   final VoidCallback onPressEvent;
+  final double max;
 }
 
 class _RefreshFloatingButtonState extends State<RefreshFloatingButton> {
@@ -14,6 +15,7 @@ class _RefreshFloatingButtonState extends State<RefreshFloatingButton> {
 
   @override
   Widget build(BuildContext context) {
+    double movedAmount = 0.0;
 
     return Stack(
       children: [
@@ -28,22 +30,30 @@ class _RefreshFloatingButtonState extends State<RefreshFloatingButton> {
               child: Icon(Icons.refresh),
             ),
             childWhenDragging: SizedBox.shrink(),
-            onDragUpdate: (details){
-              print('local position: ' + details.localPosition.toString());
-            },
             feedback: FloatingActionButton(
               onPressed: (){},
               backgroundColor: MainColor.mainColor,
               child: Icon(Icons.refresh),
             ),
-            onDragEnd: (details) {
+            onDragUpdate: (details) {
+              movedAmount += details.delta.dy;
+            },
+            onDragEnd: (_) {
+              var newDy = _offset.dy + movedAmount;
+              if(newDy < 0) {
+                newDy = 0.0;
+              }
+
+              if(newDy > widget.max) {
+                newDy = widget.max;
+              }
+
               setState(() {
-                _offset = details.offset;
-                print("offset: " + _offset.toString());
+                _offset = Offset(_offset.dx, newDy);
               });
             },
-          ),
-        ),
+            )
+          )
       ],
     );
   }
