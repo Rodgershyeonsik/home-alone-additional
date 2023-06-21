@@ -8,15 +8,12 @@ import '../../utility/providers/board_list_provider.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_drawer.dart';
 
-class BoardListPageAsk extends StatelessWidget {
-  BoardListPageAsk({Key? key}) : super(key: key);
-
-  late BoardListProvider _providerTest;
+class AskBoardScreen extends StatelessWidget {
+  AskBoardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _providerTest = Provider.of<BoardListProvider>(context, listen: false);
-    _providerTest.loadAskBoards();
+    Provider.of<BoardListProvider>(context, listen: false).loadAskBoards();
     return Scaffold(
         appBar: CommonAppBar(title: "질문 게시판"),
         drawer: CustomDrawer(),
