@@ -20,22 +20,30 @@ class BoardListProvider extends ChangeNotifier{
   }
 
   Future<void> loadFreeBoards() async {
+    _isLoading = true;
     _boards = await SpringBoardApi().requestSpecificBoardList("자유");
+    _isLoading = false;
     notifyListeners();
   }
 
   Future<void> loadAskBoards() async {
+    _isLoading = true;
     _boards = await SpringBoardApi().requestSpecificBoardList("질문");
+    _isLoading = false;
     notifyListeners();
   }
 
   Future<void> loadRecipeBoards() async {
+    _isLoading = true;
     _boards = await SpringBoardApi().requestSpecificBoardList("1인분");
+    _isLoading = false;
     notifyListeners();
   }
 
   Future<void> loadNoticeBoards() async {
+    _isLoading = true;
     _boards = await SpringBoardApi().requestSpecificBoardList("공지");
+    _isLoading = false;
     notifyListeners();
   }
 
