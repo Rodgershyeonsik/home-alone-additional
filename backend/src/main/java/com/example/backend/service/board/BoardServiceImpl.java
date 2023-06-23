@@ -11,6 +11,8 @@ import com.example.backend.service.board.request.BoardRegisterRequest;
 import com.example.backend.service.board.response.BoardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,7 +37,7 @@ public class BoardServiceImpl implements BoardService{
     BoardRepository boardRepository;
 
     @Override
-    public boolean register(BoardRegisterRequest boardRegisterRequest) {
+    public Boolean register(BoardRegisterRequest boardRegisterRequest) {
         BoardCategory boardCategory;
         Member member;
         Optional<BoardCategory> maybeCategory = categoryRepository.findByCategoryName(boardRegisterRequest.getBoardCategoryName());
@@ -73,15 +76,9 @@ public class BoardServiceImpl implements BoardService{
     public List<BoardResponse> everyBoardList() {
         List<BoardResponse> responses = new ArrayList<>();
         List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "boardNo"));
+
         for(Board b : boards) {
-            BoardResponse target = new BoardResponse(
-                                            b.getBoardNo(),
-                                            b.getTitle(),
-                                            b.getWriter(),
-                                            b.getContent(),
-                                            b.getBoardCategory().getCategoryName(),
-                                            b.getRegDate() );
-            responses.add(target);
+            responses.add(new BoardResponse(b));
         }
 
         return responses;
@@ -100,14 +97,7 @@ public class BoardServiceImpl implements BoardService{
             boards = boardRepository.findAllBoardsByCategoryId(boardCategory.getCategoryId(), Sort.by(Sort.Direction.DESC, "boardNo"));
 
             for(Board b : boards) {
-                BoardResponse target = new BoardResponse(
-                                            b.getBoardNo(),
-                                            b.getTitle(),
-                                            b.getWriter(),
-                                            b.getContent(),
-                                            b.getBoardCategory().getCategoryName(),
-                                            b.getRegDate() );
-                responses.add(target);
+                responses.add(new BoardResponse(b));
             }
             return responses;
         } else {
@@ -119,27 +109,18 @@ public class BoardServiceImpl implements BoardService{
     public BoardResponse read(Long boardNo) {
         Optional<Board> maybeBoard = boardRepository.findById(boardNo);
 
-        if (maybeBoard.equals(Optional.empty())) {
+        if (maybeBoard.isEmpty()) {
             log.info("Can't read board!!!");
 
             return null;
         }
         Board board = maybeBoard.get();
-        BoardResponse responseBoard = new BoardResponse(
-                                            board.getBoardNo(),
-                                            board.getTitle(),
-                                            board.getWriter(),
-                                            board.getContent(),
-                                            board.getBoardCategory().getCategoryName(),
-                                            board.getRegDate() );
-
-        return responseBoard;
+        return new BoardResponse(board);
     }
 
     @Override
     public BoardResponse modify(Long boardNo, BoardModifyRequest boardModifyRequest) {
         Board modifyBoard;
-        BoardResponse modifyBoardResponse;
 
         Optional<Board> maybeBoard = boardRepository.findById(boardNo);
         if(maybeBoard.isPresent()) {
@@ -148,15 +129,7 @@ public class BoardServiceImpl implements BoardService{
             modifyBoard.setContent(boardModifyRequest.getContent());
             boardRepository.save(modifyBoard);
 
-            modifyBoardResponse = new BoardResponse(
-                                        modifyBoard.getBoardNo(),
-                                        modifyBoard.getTitle(),
-                                        modifyBoard.getWriter(),
-                                        modifyBoard.getContent(),
-                                        modifyBoard.getBoardCategory().getCategoryName(),
-                                        modifyBoard.getRegDate());
-
-            return modifyBoardResponse;
+            return new BoardResponse(modifyBoard);
         } else {
             throw new RuntimeException("존재하지 않는 게시물!");
         }
@@ -165,6 +138,23 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public void remove(Long boardNo) {
         boardRepository.deleteById(boardNo);
+    }
+
+    @Override
+    public List<BoardResponse> getAllBoardListWithPage(int pageNum) {
+        final int PAGE_SIZE = 5;
+        Sort sort = Sort.by(Sort.Direction.DESC, "boardNo");
+        PageRequest pageRequest = PageRequest.of(pageNum, PAGE_SIZE, sort);
+
+        Page<Board> boardPage = boardRepository.findAll(pageRequest);
+        System.out.println(boardPage.toString());
+
+        List<Board> entities = boardPage.getContent();
+
+        return entities.stream()
+                .map(BoardResponse::new)
+                .collect(Collectors.toList());
+
     }
 
 }

@@ -6,6 +6,7 @@ import com.example.backend.service.board.request.BoardRegisterRequest;
 import com.example.backend.service.board.response.BoardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,5 +60,10 @@ public class BoardController {
         log.info("boardModify()");
 
         return service.modify(boardNo, boardModifyRequest);
+    }
+
+    @GetMapping("/all-boards-with-page/{pageNum}")
+    public List<BoardResponse> getAllBoardsWithPage(@PathVariable("pageNum") int pageNum) {
+        return service.getAllBoardListWithPage(pageNum);
     }
 }

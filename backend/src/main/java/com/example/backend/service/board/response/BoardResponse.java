@@ -1,5 +1,6 @@
 package com.example.backend.service.board.response;
 
+import com.example.backend.entity.board.Board;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,13 @@ public class BoardResponse {
     private String content;
     private String categoryName;
     private Date regDate;
+
+    public BoardResponse(Board board) {
+                this.boardNo = board.getBoardNo();
+                this.title = board.getTitle();
+                this.writer = board.getWriter();
+                this.content = board.getContent();
+                this.categoryName = board.getBoardCategory().getCategoryName();
+                this.regDate = board.getRegDate();
+    }
 }

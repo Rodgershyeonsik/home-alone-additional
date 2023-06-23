@@ -8,10 +8,13 @@ import java.util.List;
 
 public interface BoardService {
 
-    public boolean register(BoardRegisterRequest boardRegisterRequest);
-    public List<BoardResponse> everyBoardList();
-    public List<BoardResponse> specificBoardList(String categoryName);
-    public BoardResponse read(Long boardNo);
-    public BoardResponse modify(Long boardNo, BoardModifyRequest boardModifyRequest);
-    public void remove(Long boardNo);
+    Boolean register(BoardRegisterRequest boardRegisterRequest);
+    List<BoardResponse> everyBoardList();
+    List<BoardResponse> specificBoardList(String categoryName);
+    BoardResponse read(Long boardNo);
+    BoardResponse modify(Long boardNo, BoardModifyRequest boardModifyRequest);
+    void remove(Long boardNo);
+
+    List<BoardResponse> getAllBoardListWithPage(int pageNum);
+
 }

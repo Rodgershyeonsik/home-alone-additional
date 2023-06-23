@@ -1,6 +1,8 @@
 package com.example.backend.repository;
 
 import com.example.backend.entity.board.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +17,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("select b from Board b join fetch b.member tb where tb.Id = :memberId")
     List<Board> findAllBoardsByMemberId(@Param("memberId")Long memberId, Sort sort);
+
+    Page<Board> findAll(Pageable pageable);
 
 }
