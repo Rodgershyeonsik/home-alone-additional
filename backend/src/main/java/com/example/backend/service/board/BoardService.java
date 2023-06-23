@@ -15,6 +15,6 @@ public interface BoardService {
     BoardResponse modify(Long boardNo, BoardModifyRequest boardModifyRequest);
     void remove(Long boardNo);
 
-    List<BoardResponse> getAllBoardListWithPage(int pageNum);
+    List<BoardResponse> getAllBoardListWithPage(int pageIndex);
 
 }

@@ -141,10 +141,10 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardResponse> getAllBoardListWithPage(int pageNum) {
+    public List<BoardResponse> getAllBoardListWithPage(int pageIndex) {
         final int PAGE_SIZE = 5;
-        Sort sort = Sort.by(Sort.Direction.DESC, "boardNo");
-        PageRequest pageRequest = PageRequest.of(pageNum, PAGE_SIZE, sort);
+        Sort newest = Sort.by(Sort.Direction.DESC, "boardNo");
+        PageRequest pageRequest = PageRequest.of(pageIndex, PAGE_SIZE, newest);
 
         Page<Board> boardPage = boardRepository.findAll(pageRequest);
         System.out.println(boardPage.toString());
