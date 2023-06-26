@@ -9,6 +9,7 @@ import com.example.backend.repository.MemberRepository;
 import com.example.backend.service.board.request.BoardModifyRequest;
 import com.example.backend.service.board.request.BoardRegisterRequest;
 import com.example.backend.service.board.response.BoardResponse;
+import com.example.backend.service.board.response.PagedBoardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -141,7 +142,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardResponse> getAllBoardListWithPage(int pageIndex) {
+    public PagedBoardResponse getAllBoardListWithPage(int pageIndex) {
         final int PAGE_SIZE = 5;
         Sort newest = Sort.by(Sort.Direction.DESC, "boardNo");
         PageRequest pageRequest = PageRequest.of(pageIndex, PAGE_SIZE, newest);
@@ -151,9 +152,13 @@ public class BoardServiceImpl implements BoardService{
 
         List<Board> entities = boardPage.getContent();
 
-        return entities.stream()
-                .map(BoardResponse::new)
-                .collect(Collectors.toList());
+        Integer totalPages = boardPage.getTotalPages();
+        List<BoardResponse> boards = entities.stream()
+                .map(BoardResponse::new).
+                collect(Collectors.toList());
+        System.out.println("혹시 여기서 나는지..?");
+
+        return new PagedBoardResponse(totalPages, boards);
 
     }
 

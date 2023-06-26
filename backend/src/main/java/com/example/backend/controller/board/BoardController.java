@@ -4,6 +4,7 @@ import com.example.backend.service.board.BoardService;
 import com.example.backend.service.board.request.BoardModifyRequest;
 import com.example.backend.service.board.request.BoardRegisterRequest;
 import com.example.backend.service.board.response.BoardResponse;
+import com.example.backend.service.board.response.PagedBoardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,7 @@ public class BoardController {
     }
 
     @GetMapping("/all-boards-with-page/{pageIndex}")
-    public List<BoardResponse> getAllBoardsWithPage(@PathVariable("pageIndex") int pageIndex) {
+    public PagedBoardResponse getAllBoardsWithPage(@PathVariable("pageIndex") int pageIndex) {
         return service.getAllBoardListWithPage(pageIndex);
     }
 }
