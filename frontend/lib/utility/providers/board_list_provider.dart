@@ -8,13 +8,19 @@ import '../../board/api/board.dart';
 class BoardListProvider extends ChangeNotifier{
   bool _isLoading = false;
   List<Board> _boards = [];
+  late int lastIndex;
 
   bool get isLoading => _isLoading;
   List<Board> get boards => _boards;
 
-  Future<void> loadEveryBoards() async {
+  Future<void> loadEveryBoards(int pageIndex) async {
     _isLoading = true;
-    _boards = await SpringBoardApi().requestEveryBoardList();
+    var pagedBoardsRes = await SpringBoardApi().requestAllBoardsWithPage(pageIndex);
+    if(pageIndex == 0) {
+      _boards.clear();
+    }
+    lastIndex = pagedBoardsRes.totalPages - 1;
+    _boards.addAll(pagedBoardsRes.pagedBoards);
     _isLoading = false;
     notifyListeners();
   }

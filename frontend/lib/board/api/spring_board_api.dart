@@ -15,9 +15,9 @@ class SpringBoardApi{
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("게시물 삭제 통신 확인");
     } else {
-      throw Exception("통신 실패");
+      throw Exception("게시물 삭제 통신 실패");
     }
   }
 
@@ -33,17 +33,16 @@ class SpringBoardApi{
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("게시물 수정 통신 확인");
 
       var jsonBoard = jsonDecode(utf8.decode(response.bodyBytes));
       Board responseBoard = Board.fromJson(jsonBoard);
 
       return responseBoard;
     } else {
-      throw Exception("통신 실패");
+      throw Exception("게시물 수정 통신 실패");
     }
   }
-
 
   Future<bool> requestBoardRegister(BoardRegisterRequest request) async {
     var data = { 'title': request.title, 'writer': request.writer,
@@ -57,27 +56,27 @@ class SpringBoardApi{
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("게시물 등록 통신 확인");
       return json.decode(response.body);
     } else {
-      throw Exception("통신 실패");
+      throw Exception("게시물 등록 통신 실패");
     }
   }
 
-  Future<List<Board>> requestEveryBoardList() async {
-    print('보드 리스트 요청');
+  Future<PagedBoardRes> requestAllBoardsWithPage(int pageIndex) async {
 
-    var response = await http.get(Uri.http(HttpUri.home, '/board/list'));
+    var response = await http.get(Uri.http(HttpUri.home, '/board/all-boards-with-page/$pageIndex'));
 
     if (response.statusCode == 200) {
-      debugPrint("board list 통신 확인");
-      debugPrint("every board list: " + utf8.decode(response.bodyBytes).toString());
+      debugPrint("requestAllBoardsWithPage: " + utf8.decode(response.bodyBytes));
+      var jsonPagedBoardRes = jsonDecode(utf8.decode(response.bodyBytes));
 
-      var jsonBoard = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+      var totalPages = jsonPagedBoardRes["totalPages"] as int;
+      var jsonBoards = jsonPagedBoardRes["boards"] as List;
 
-      List<Board> list = jsonBoard.map((dataJson)=>Board.fromJson(dataJson)).toList();
+      List<Board> boards = jsonBoards.map((json)=>Board.fromJson(json)).toList();
 
-      return list;
+      return PagedBoardRes(totalPages: totalPages, pagedBoards: boards);
 
     } else {
       throw Exception("board list 통신 실패");

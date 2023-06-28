@@ -26,3 +26,13 @@ class Board {
     );
   }
 }
+
+class PagedBoardRes {
+  int totalPages;
+  List<Board> pagedBoards;
+
+  PagedBoardRes({
+    required this.totalPages,
+    required this.pagedBoards
+  });
+}

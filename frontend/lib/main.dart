@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/board/screens/board_list_page_ask.dart';
-import 'package:frontend/board/screens/board_list_page_free.dart';
-import 'package:frontend/board/screens/board_list_page_notice.dart';
-import 'package:frontend/board/screens/board_list_page_recipe.dart';
+import 'package:frontend/board/screens/ask_board_screen.dart';
+import 'package:frontend/board/screens/free_board_screen.dart';
+import 'package:frontend/board/screens/notice_board_screen.dart';
+import 'package:frontend/board/screens/recipe_board_screen.dart';
 import 'package:frontend/user/screens/my_page_screen.dart';
 import 'package:frontend/auth/screens/sign_in_screen.dart';
 import 'package:frontend/auth/screens/sign_up_complete_screen.dart';
@@ -52,10 +52,10 @@ class MyApp extends StatelessWidget {
         "/home": (context) => HomeScreen(),
         "/sign-in": (context) => SignInScreen(),
         "/sign-up-complete": (context) =>SignUpCompleteScreen(),
-        "/board-list-free": (context) => BoardListPageFree(),
-        "/board-list-ask": (context) => BoardListPageAsk(),
-        "/board-list-recipe": (context) => BoardListPageRecipe(),
-        "/board-list-notice": (context) => BoardListPageNotice(),
+        "/board-list-free": (context) => FreeBoardScreen(),
+        "/board-list-ask": (context) => AskBoardScreen(),
+        "/board-list-recipe": (context) => RecipeBoardScreen(),
+        "/board-list-notice": (context) => NoticeBoardScreen(),
           "/my-page": (context) => MyPageScreen(),
         },
       ),

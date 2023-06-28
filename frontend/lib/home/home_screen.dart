@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<BoardListProvider>(context, listen: false).loadEveryBoards();
+    Provider.of<BoardListProvider>(context, listen: false).loadEveryBoards(0);
     Provider.of<UserDataProvider>(context, listen: false).setUserData();
 
     return Scaffold(

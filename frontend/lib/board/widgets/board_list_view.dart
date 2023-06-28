@@ -28,12 +28,46 @@ class BoardListView extends StatefulWidget {
 class _BoardListViewState extends State<BoardListView> {
   String _sortValue = SortBy.latest.sortValue;
   late BoardListProvider _boardListProvider;
+  final ScrollController _scrollController = ScrollController();
   final positionAdjustment = 60.0;
+  int pageRequestCnt = 0;
 
   @override
   void initState() {
     super.initState();
     _boardListProvider = Provider.of<BoardListProvider>(context, listen: false);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        pageRequestCnt++;
+        if(pageRequestCnt > _boardListProvider.lastIndex) {
+          print("마지막 페이지");
+        } else {
+          requestNextPage(pageRequestCnt);
+        }
+      }
+    });
+  }
+
+  Future<void> requestNextPage(int pageCnt) async {
+    switch (widget.category) {
+      case BoardCategory.all:
+        _boardListProvider.loadEveryBoards(pageCnt);
+        break;
+      case BoardCategory.free:
+        _boardListProvider.loadFreeBoards();
+        break;
+      case BoardCategory.ask:
+        _boardListProvider.loadAskBoards();
+        break;
+      case BoardCategory.recipe:
+        _boardListProvider.loadRecipeBoards();
+        break;
+      case BoardCategory.notice:
+        _boardListProvider.loadNoticeBoards();
+        break;
+      default:
+        debugPrint("그럴리가 없는데?");
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -61,6 +95,7 @@ class _BoardListViewState extends State<BoardListView> {
                       ),
                       Expanded(
                         child: ListView.separated(
+                          controller: _scrollController,
                           separatorBuilder: (BuildContext context, int index) =>
                           const Divider(thickness: 1, height: 1),
                           itemCount: widget.boards.length,
@@ -88,6 +123,7 @@ class _BoardListViewState extends State<BoardListView> {
                   max: constrains.maxHeight - positionAdjustment,
                   onPressEvent: () {
                     refreshBoardList();
+                    pageRequestCnt = 0;
                   })
             ]
         );
@@ -100,7 +136,7 @@ class _BoardListViewState extends State<BoardListView> {
     await Future.delayed(const Duration(milliseconds: 500));
     switch (widget.category) {
       case BoardCategory.all:
-        _boardListProvider.loadEveryBoards();
+        _boardListProvider.loadEveryBoards(0);
         break;
       case BoardCategory.free:
         _boardListProvider.loadFreeBoards();
