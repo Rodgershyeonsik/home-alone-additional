@@ -74,33 +74,26 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardResponse> everyBoardList() {
-        List<BoardResponse> responses = new ArrayList<>();
-        List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "boardNo"));
-
-        for(Board b : boards) {
-            responses.add(new BoardResponse(b));
-        }
-
-        return responses;
-    }
-
-    @Override
-    public List<BoardResponse> specificBoardList(String categoryName) {
+    public PagedBoardResponse getCategoryBoardListWithPage(String categoryName, int pageIndex) {
         BoardCategory boardCategory;
-        List<BoardResponse> responses = new ArrayList<>();
-        List<Board> boards;
 
         Optional<BoardCategory> maybeCategory = categoryRepository.findByCategoryName(categoryName);
         if(maybeCategory.isPresent()) {
             boardCategory = maybeCategory.get();
 
-            boards = boardRepository.findAllBoardsByCategoryId(boardCategory.getCategoryId(), Sort.by(Sort.Direction.DESC, "boardNo"));
+            final int PAGE_SIZE = 10;
+            Sort newest = Sort.by(Sort.Direction.DESC, "boardNo");
+            PageRequest pageRequest = PageRequest.of(pageIndex, PAGE_SIZE, newest);
+            Page<Board> boardPage =
+                    boardRepository.findAllByCategoryIdUsingQuery(boardCategory.getCategoryId(), pageRequest);
+            List<Board> entities = boardPage.getContent();
 
-            for(Board b : boards) {
-                responses.add(new BoardResponse(b));
-            }
-            return responses;
+            Integer totalPages = boardPage.getTotalPages();
+            List<BoardResponse> boards = entities.stream()
+                    .map(BoardResponse::new).
+                    collect(Collectors.toList());
+
+            return new PagedBoardResponse(totalPages, boards);
         } else {
             throw new RuntimeException("존재하지 않는 게시판");
         }
@@ -143,12 +136,12 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public PagedBoardResponse getAllBoardListWithPage(int pageIndex) {
-        final int PAGE_SIZE = 5;
+        final int PAGE_SIZE = 10;
         Sort newest = Sort.by(Sort.Direction.DESC, "boardNo");
         PageRequest pageRequest = PageRequest.of(pageIndex, PAGE_SIZE, newest);
 
         Page<Board> boardPage = boardRepository.findAll(pageRequest);
-        System.out.println(boardPage.toString());
+        log.info(boardPage.toString());
 
         List<Board> entities = boardPage.getContent();
 
@@ -156,10 +149,8 @@ public class BoardServiceImpl implements BoardService{
         List<BoardResponse> boards = entities.stream()
                 .map(BoardResponse::new).
                 collect(Collectors.toList());
-        System.out.println("혹시 여기서 나는지..?");
 
         return new PagedBoardResponse(totalPages, boards);
-
     }
 
 }

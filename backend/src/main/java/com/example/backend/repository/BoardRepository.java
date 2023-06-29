@@ -12,8 +12,9 @@ import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @Query("select b from Board b join fetch b.boardCategory tb where tb.categoryId = :categoryId")
-    List<Board> findAllBoardsByCategoryId(@Param("categoryId")Long categoryId, Sort sort);
+    @Query(value = "select b from Board b join fetch b.boardCategory tb where tb.categoryId = :categoryId",
+    countQuery = "select count(b) from Board b where b.boardCategory.categoryId = :categoryId")
+    Page<Board> findAllByCategoryIdUsingQuery(@Param("categoryId")Long categoryId, Pageable pageable);
 
     @Query("select b from Board b join fetch b.member tb where tb.Id = :memberId")
     List<Board> findAllBoardsByMemberId(@Param("memberId")Long memberId, Sort sort);

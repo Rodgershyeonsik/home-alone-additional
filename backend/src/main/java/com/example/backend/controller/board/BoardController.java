@@ -20,50 +20,45 @@ public class BoardController {
     @Autowired
     private BoardService service;
 
-    @GetMapping("/list")
-    public List<BoardResponse> everyBoardList () {
-        log.info("everyBoardList()");
-
-        return service.everyBoardList();
+    @GetMapping("/all-boards-with-page/{pageIndex}")
+    public PagedBoardResponse getAllBoardsWithPage(@PathVariable("pageIndex") int pageIndex) {
+        return service.getAllBoardListWithPage(pageIndex);
     }
 
-    @GetMapping(value = "/list/{categoryName}", produces = "application/json; charset=utf8")
-    public List<BoardResponse> specificBoardList (@PathVariable("categoryName") String categoryName) {
-        log.info("specificBoardList()");
+    @GetMapping("/category-boards-with-page/{categoryName}/{pageIndex}")
+    public PagedBoardResponse getCategoryBoardListWithPage(
+            @PathVariable("categoryName") String categoryName,
+            @PathVariable("pageIndex") int pageIndex) {
+                log.info("specificBoardList()");
 
-        return service.specificBoardList(categoryName);
+        return service.getCategoryBoardListWithPage(categoryName, pageIndex);
     }
 
     @PostMapping("/register")
-    public boolean boardRegister (@RequestBody BoardRegisterRequest boardRegisterRequest) {
+    public boolean boardRegister(@RequestBody BoardRegisterRequest boardRegisterRequest) {
         log.info("boardRegister()");
 
         return service.register(boardRegisterRequest);
     }
 
     @GetMapping("/{boardNo}")
-    public BoardResponse boardRead (@PathVariable("boardNo") Long boardNo) {
+    public BoardResponse boardRead(@PathVariable("boardNo") Long boardNo) {
         log.info("boardRead()");
 
         return service.read(boardNo);
     }
 
     @DeleteMapping("/{boardNo}")
-    public void boardRemove (@PathVariable("boardNo") Long boardNo) {
+    public void boardRemove(@PathVariable("boardNo") Long boardNo) {
         log.info("boardRemove()");
 
         service.remove(boardNo);
     }
 
     @PutMapping("/{boardNo}")
-    public BoardResponse boardModify (@PathVariable("boardNo") Long boardNo, @RequestBody BoardModifyRequest boardModifyRequest) {
+    public BoardResponse boardModify(@PathVariable("boardNo") Long boardNo, @RequestBody BoardModifyRequest boardModifyRequest) {
         log.info("boardModify()");
 
         return service.modify(boardNo, boardModifyRequest);
-    }
-
-    @GetMapping("/all-boards-with-page/{pageIndex}")
-    public PagedBoardResponse getAllBoardsWithPage(@PathVariable("pageIndex") int pageIndex) {
-        return service.getAllBoardListWithPage(pageIndex);
     }
 }
