@@ -65,7 +65,7 @@ class SignUpFormState extends State<SignUpForm> {
             LongButtonContainer(
               textButton: TextButton(
                 onPressed: () async {
-                  emailPass = await SpringMemberApi().emailCheck( _email );
+                  emailPass = await SpringMemberApi.emailCheck( _email );
                   debugPrint('입력 이메일: ' + _email);
                   debugPrint("emailPass: " + emailPass.toString());
 
@@ -101,7 +101,7 @@ class SignUpFormState extends State<SignUpForm> {
             LongButtonContainer(
               textButton: TextButton(
                 onPressed: () async {
-                  nicknamePass = await SpringMemberApi().nicknameCheck(_nickname);
+                  nicknamePass = await SpringMemberApi.nicknameCheck(_nickname);
                   debugPrint("nicknamePass: " + nicknamePass.toString());
 
                   if(nicknamePass == true) {
@@ -140,7 +140,7 @@ class SignUpFormState extends State<SignUpForm> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     if(emailPass == true && nicknamePass == true) {
-                      signUpSuccess = await SpringMemberApi().signUp(MemberSignUpRequest(_email, password, _nickname));
+                      signUpSuccess = await SpringMemberApi.signUp(MemberSignUpRequest(_email, password, _nickname));
                       if(signUpSuccess == true) {
                         Navigator.pushNamed(context, "/sign-up-complete");
                       } else {

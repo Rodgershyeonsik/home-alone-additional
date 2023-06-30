@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../utility/http_uri.dart';
 
 class SpringMemberApi {
-  Future<bool?> emailCheck ( String email ) async {
+  static Future<bool?> emailCheck ( String email ) async {
 
     var response = await http.get(
       Uri.http(HttpUri.home, '/member/check-email/$email'),
@@ -20,7 +20,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<bool?> nicknameCheck (String nickname) async {
+  static Future<bool?> nicknameCheck (String nickname) async {
 
     var response = await http.get(
       Uri.http(HttpUri.home, '/member/check-nickname/$nickname'),
@@ -34,7 +34,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<bool?> signUp (MemberSignUpRequest request) async {
+  static Future<bool?> signUp (MemberSignUpRequest request) async {
     var data = { 'email': request.email, 'password': request.password, 'nickname': request.nickname };
     var body = json.encode(data);
 
@@ -59,7 +59,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<SignInResponse> signIn (MemberSignInRequest request) async {
+  static Future<SignInResponse> signIn (MemberSignInRequest request) async {
     var data = { 'email': request.email, 'password': request.password };
     var body = json.encode(data);
 
@@ -80,33 +80,11 @@ class SpringMemberApi {
 
       return SignInResponse.fromJson(uft8DecodedJsonRes);
     } else {
-      throw Exception("로그인 통신 실패");
+      throw Exception("로그인 통신 실패: ${response.statusCode}");
     }
   }
 
-  // Future<UserDataResponse> requestUserData(String? userToken) async {
-  //
-  //   var data = { 'userToken' : userToken };
-  //   var body = json.encode(data);
-  //
-  //   var response = await http.post(
-  //       Uri.http(HttpUri.home, '/member/data-read'),
-  //       headers: {"Content-Type": "application/json"},
-  //       body: body,);
-  //
-  //   if (response.statusCode == 200) {
-  //     debugPrint("통신 확인");
-  //
-  //     var jsonResData = jsonDecode(utf8.decode(response.bodyBytes));
-  //     UserDataResponse resData = UserDataResponse.fromJson(jsonResData);
-  //
-  //     return resData;
-  //   } else {
-  //     throw Exception("통신 실패");
-  //   }
-  // }
-
-  Future<bool?> requestSignOut (String? userToken) async {
+  static Future<bool?> requestSignOut (String? userToken) async {
     var data = { 'userToken': userToken };
     var body = json.encode(data);
 
@@ -120,11 +98,11 @@ class SpringMemberApi {
       debugPrint("통신 확인");
       return json.decode(response.body);
     } else {
-      throw Exception("통신 실패");
+      throw Exception("통신 실패. ${response.statusCode}");
     }
   }
 
-  Future<bool> requestModifyUserData (ChangeNicknameRequest request) async {
+  static Future<bool> requestModifyUserData (ChangeNicknameRequest request) async {
     var data = { 'userToken': request.userToken, 'newNickname' : request.newNickname };
     var body = json.encode(data);
 
@@ -142,7 +120,7 @@ class SpringMemberApi {
     }
   }
 
-  Future<bool> requestUnregister (String? userToken) async {
+  static Future<bool> requestUnregister (String? userToken) async {
     var data = { 'userToken': userToken };
     var body = json.encode(data);
 
@@ -157,6 +135,20 @@ class SpringMemberApi {
       return json.decode(response.body);
     } else {
       throw Exception("통신 실패");
+    }
+  }
+
+  static Future<bool> requestIfTokenIsValid(String token) async {
+    var response = await http.get(Uri.http(HttpUri.home, 'member/check-token-valid'),
+        headers: {'Cookie': 'token=$token'});
+
+    if(response.statusCode == 200) {
+      debugPrint("requestIfTokenIsValid 통신 완료");
+      return jsonDecode(response.body);
+    } else {
+      debugPrint("상태 코드: ${response.statusCode}");
+      debugPrint("에러 내용: ${response.body}");
+      throw Exception('requestIfTokenIsValid 통신 실패');
     }
   }
 }

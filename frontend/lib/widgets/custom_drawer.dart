@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/auth/api/spring_member_api.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:provider/provider.dart';
 
@@ -15,15 +14,14 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  late bool isLogin;
   late UserDataProvider userDataProvider;
 
-  @override
-  void initState() {
-    super.initState();
-    userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
-    userDataProvider.authToken != null ? isLogin = true : isLogin = false;
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+  //   userDataProvider.authToken != null ? isLogin = true : isLogin = false;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               return Drawer(
                   child: Column(
                     children: [
-                      isLogin
+                      provider.isLogin
                           ? UserAccountsDrawerHeader(
                             decoration: BoxDecoration(
                               color: MainColor.mainColor
@@ -80,7 +78,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                         ],
                       ),
-                      isLogin
+                      provider.isLogin
                           ? ListTile(
                             title: Text("게시물 작성하기"),
                             onTap: () => Navigator.push(
@@ -89,7 +87,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 builder: (context) => const BoardRegisterScreen(),
                               )))
                           : Container(),
-                      isLogin
+                      provider.isLogin
                           ? ListTile(
                             title: Text("내 정보 보기"),
                             onTap: () => Navigator.pushNamed(context, "/my-page"))
@@ -98,7 +96,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         title: Text("공지사항"),
                         onTap: () => Navigator.pushNamed(context, "/board-list-notice"),
                       ),
-                      isLogin
+                      provider.isLogin
                           ? ListTile(
                             title: Text("로그아웃"),
                             onTap: () {
@@ -115,10 +113,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             }, child: Text("아니오")),
                                         TextButton(
                                           onPressed: () async {
-                                            await signOut();
-                                            setState(() {
-                                              isLogin = false;
-                                            });
+                                            await provider.signOut();
                                             Navigator.pushNamed(context, '/home');
                                             showDialog(
                                                 context: context,
@@ -140,12 +135,4 @@ class _CustomDrawerState extends State<CustomDrawer> {
           },
         );
   }
-
-  Future<void> signOut() async {
-    await SpringMemberApi()
-        .requestSignOut(userDataProvider.authToken);
-    await UserDataProvider.storage.deleteAll();
-    debugPrint("storage 삭제");
-  }
-
 }

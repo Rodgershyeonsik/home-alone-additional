@@ -67,7 +67,7 @@ class MyPageFormState extends State<MyPageForm> {
                       textButton: TextButton(
                         onPressed: () async {
                           nicknamePass =
-                          await SpringMemberApi().nicknameCheck(newNickname);
+                          await SpringMemberApi.nicknameCheck(newNickname);
                           debugPrint(
                               "nicknamePass: " + nicknamePass.toString());
 
@@ -95,7 +95,7 @@ class MyPageFormState extends State<MyPageForm> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate() &&
                                 nicknamePass == true) {
-                              res = await SpringMemberApi().
+                              res = await SpringMemberApi.
                               requestModifyUserData(
                                   ChangeNicknameRequest(provider.authToken!,
                                       newNickname));
@@ -164,11 +164,11 @@ class MyPageFormState extends State<MyPageForm> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          res = await SpringMemberApi()
+                                          res = await SpringMemberApi
                                               .requestUnregister(
                                               provider.authToken);
                                           if (res == true) {
-                                            await SpringMemberApi()
+                                            await SpringMemberApi
                                                 .requestSignOut(
                                                 provider.authToken);
                                             await UserDataProvider.storage.deleteAll();

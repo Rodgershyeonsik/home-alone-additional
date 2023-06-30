@@ -73,7 +73,7 @@ class _SignInFormState extends State<SignInForm> {
                     return;
                   }
 
-                  _signInResponse = await SpringMemberApi()
+                  _signInResponse = await SpringMemberApi
                       .signIn(MemberSignInRequest(_email, _password));
 
                   switch (_signInResponse.result) {
