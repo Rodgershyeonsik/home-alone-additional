@@ -9,25 +9,30 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_drawer.dart';
 
 class AskBoardScreen extends StatelessWidget {
-  AskBoardScreen({Key? key}) : super(key: key);
+  const AskBoardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<BoardListProvider>(context, listen: false).loadAskBoards();
+    Provider.of<BoardListProvider>(context, listen: false).loadAskBoards(0);
     return Scaffold(
         appBar: CommonAppBar(title: "질문 게시판"),
         drawer: CustomDrawer(),
         body: Consumer<BoardListProvider>(
           builder: (context, provider, widget){
-            if (provider.boards.isNotEmpty) {
-              return BoardListView(
-                boards: provider.boards,
-                listTitle: "게시물 목록",
-                category: BoardCategory.ask,);
-            }
-            return Center(
-              child: Text("존재하는 게시물이 없습니다!"),
-            );
+            return provider.isLoading ?
+                const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.grey,
+                    )
+                )
+                : provider.boards.isNotEmpty ?
+                  BoardListView(
+                    boards: provider.boards,
+                    listTitle: "게시물 목록",
+                    category: BoardCategory.ask,)
+                : Center(
+                    child: Text("존재하는 게시물이 없습니다!"),
+                  );
           },
         )
     );

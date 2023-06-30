@@ -13,7 +13,7 @@ class RecipeBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<BoardListProvider>(context, listen: false).loadRecipeBoards();
+    Provider.of<BoardListProvider>(context, listen: false).loadRecipeBoards(0);
     return Scaffold(
         appBar: CommonAppBar(title: "1인분 게시판"),
         drawer: CustomDrawer(),

@@ -7,7 +7,7 @@ import '../../board/api/board.dart';
 
 class BoardListProvider extends ChangeNotifier{
   bool _isLoading = false;
-  List<Board> _boards = [];
+  final List<Board> _boards = [];
   late int lastIndex;
 
   bool get isLoading => _isLoading;
@@ -25,30 +25,50 @@ class BoardListProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void> loadFreeBoards() async {
+  Future<void> loadFreeBoards(int pageIndex) async {
     _isLoading = true;
-    _boards = await SpringBoardApi().requestSpecificBoardList("자유");
+    var pagedBoardsRes = await SpringBoardApi().requestSpecificBoardWithPage("자유", pageIndex);
+    if(pageIndex == 0) {
+      _boards.clear();
+    }
+    lastIndex = pagedBoardsRes.totalPages - 1;
+    _boards.addAll(pagedBoardsRes.pagedBoards);
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> loadAskBoards() async {
+  Future<void> loadAskBoards(int pageIndex) async {
     _isLoading = true;
-    _boards = await SpringBoardApi().requestSpecificBoardList("질문");
+    var pagedBoardsRes = await SpringBoardApi().requestSpecificBoardWithPage("질문", pageIndex);
+    if(pageIndex == 0) {
+      _boards.clear();
+    }
+    lastIndex = pagedBoardsRes.totalPages - 1;
+    _boards.addAll(pagedBoardsRes.pagedBoards);
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> loadRecipeBoards() async {
+  Future<void> loadRecipeBoards(int pageIndex) async {
     _isLoading = true;
-    _boards = await SpringBoardApi().requestSpecificBoardList("1인분");
+    var pagedBoardsRes = await SpringBoardApi().requestSpecificBoardWithPage("1인분", pageIndex);
+    if(pageIndex == 0) {
+      _boards.clear();
+    }
+    lastIndex = pagedBoardsRes.totalPages - 1;
+    _boards.addAll(pagedBoardsRes.pagedBoards);
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> loadNoticeBoards() async {
+  Future<void> loadNoticeBoards(int pageIndex) async {
     _isLoading = true;
-    _boards = await SpringBoardApi().requestSpecificBoardList("공지");
+    var pagedBoardsRes = await SpringBoardApi().requestSpecificBoardWithPage("공지", pageIndex);
+    if(pageIndex == 0) {
+      _boards.clear();
+    }
+    lastIndex = pagedBoardsRes.totalPages - 1;
+    _boards.addAll(pagedBoardsRes.pagedBoards);
     _isLoading = false;
     notifyListeners();
   }

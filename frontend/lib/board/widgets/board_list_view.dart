@@ -54,16 +54,16 @@ class _BoardListViewState extends State<BoardListView> {
         _boardListProvider.loadEveryBoards(pageCnt);
         break;
       case BoardCategory.free:
-        _boardListProvider.loadFreeBoards();
+        _boardListProvider.loadFreeBoards(pageCnt);
         break;
       case BoardCategory.ask:
-        _boardListProvider.loadAskBoards();
+        _boardListProvider.loadAskBoards(pageCnt);
         break;
       case BoardCategory.recipe:
-        _boardListProvider.loadRecipeBoards();
+        _boardListProvider.loadRecipeBoards(pageCnt);
         break;
       case BoardCategory.notice:
-        _boardListProvider.loadNoticeBoards();
+        _boardListProvider.loadNoticeBoards(pageCnt);
         break;
       default:
         debugPrint("그럴리가 없는데?");
@@ -139,16 +139,16 @@ class _BoardListViewState extends State<BoardListView> {
         _boardListProvider.loadEveryBoards(0);
         break;
       case BoardCategory.free:
-        _boardListProvider.loadFreeBoards();
+        _boardListProvider.loadFreeBoards(0);
         break;
       case BoardCategory.ask:
-        _boardListProvider.loadAskBoards();
+        _boardListProvider.loadAskBoards(0);
         break;
       case BoardCategory.recipe:
-        _boardListProvider.loadRecipeBoards();
+        _boardListProvider.loadRecipeBoards(0);
         break;
       case BoardCategory.notice:
-        _boardListProvider.loadNoticeBoards();
+        _boardListProvider.loadNoticeBoards(0);
         break;
       default:
         debugPrint("그럴리가 없는데?");

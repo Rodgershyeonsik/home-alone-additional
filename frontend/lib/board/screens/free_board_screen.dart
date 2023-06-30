@@ -13,7 +13,7 @@ class FreeBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<BoardListProvider>(context, listen: false).loadFreeBoards();
+    Provider.of<BoardListProvider>(context, listen: false).loadFreeBoards(0);
     return Scaffold(
         appBar: CommonAppBar(title: "자유 게시판"),
         drawer: CustomDrawer(),

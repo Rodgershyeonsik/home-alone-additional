@@ -13,7 +13,7 @@ class NoticeBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<BoardListProvider>(context, listen: false).loadNoticeBoards();
+    Provider.of<BoardListProvider>(context, listen: false).loadNoticeBoards(0);
     return Scaffold(
         appBar: CommonAppBar(title: "공지사항"),
         drawer: CustomDrawer(),

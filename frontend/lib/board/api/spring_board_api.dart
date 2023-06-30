@@ -83,24 +83,25 @@ class SpringBoardApi{
     }
   }
 
-  Future<List<Board>> requestSpecificBoardList(String categoryName) async {
+  Future<PagedBoardRes> requestSpecificBoardWithPage(String categoryName, int pageIndex) async {
+    debugPrint("카테고리: " + categoryName + ", index: " + pageIndex.toString());
 
     var response = await http.get(
-        Uri.http(HttpUri.home, '/board/list/$categoryName')
+        Uri.http(HttpUri.home, 'board/category-boards-with-page/$categoryName/$pageIndex')
     );
 
     if (response.statusCode == 200) {
-      debugPrint("통신 확인");
+      debugPrint("requestSpecificBoardList() 통신 확인");
+      var jsonPagedBoardRes = jsonDecode(utf8.decode(response.bodyBytes));
 
-      debugPrint(jsonDecode(utf8.decode(response.bodyBytes)).toString()); //json으로 받은걸 toString
-      var jsonBoard = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+      var totalPages = jsonPagedBoardRes["totalPages"] as int;
+      var jsonBoards = jsonPagedBoardRes["boards"] as List;
 
-      List<Board> list = jsonBoard.map((dataJson)=>Board.fromJson(dataJson)).toList();
+      List<Board> boards = jsonBoards.map((json)=>Board.fromJson(json)).toList();
 
-      return list;
-
+      return PagedBoardRes(totalPages: totalPages, pagedBoards: boards);
     } else {
-      throw Exception("통신 실패");
+      throw Exception("requestSpecificBoardList()통신 실패: " + response.statusCode.toString());
     }
   }
 }
