@@ -75,4 +75,10 @@ public class MemberController {
 
         return service.removeMember(request);
     }
+
+    @GetMapping("/check-token-valid")
+    public Boolean checkTokenIsValid(@CookieValue("token")String token) {
+        log.info("checkTokenIsValid() " + token);
+        return service.checkTokenIsValid(token);
+    }
 }

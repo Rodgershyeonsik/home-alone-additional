@@ -28,7 +28,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @Transactional
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -123,9 +123,9 @@ public class MemberServiceImpl implements MemberService{
 
         log.info(memberId.toString());
 
-        if(memberId != null) {
+        if (memberId != null) {
             Optional<Member> maybeMember = memberRepository.findById(memberId);
-            if(maybeMember.isPresent()) {
+            if (maybeMember.isPresent()) {
                 MemberDataResponse dataRes = new MemberDataResponse(maybeMember.get().getEmail(), maybeMember.get().getNickname());
                 return dataRes;
             }
@@ -134,7 +134,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public Boolean changeUserNickname (ChangeNicknameRequest request) {
+    public Boolean changeUserNickname(ChangeNicknameRequest request) {
         Long memberId = redisService.getValueByKey(request.getUserToken());
 
         if (memberId != null) {
@@ -147,7 +147,7 @@ public class MemberServiceImpl implements MemberService{
 
                 List<Board> usersBoards = maybeMember.get().getBoards();
 
-                for(Board b : usersBoards) {
+                for (Board b : usersBoards) {
                     b.setWriter(request.getNewNickname());
                     boardRepository.save(b);
                 }
@@ -165,7 +165,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Boolean removeMember(FlutterUserTokenRequest request) {
         Long memberId = redisService.getValueByKey(request.getUserToken());
-        if(memberId != null) {
+        if (memberId != null) {
 
             final Optional<Authentication> maybeAuth = authenticationRepository.findByMemberId(memberId);
             if (maybeAuth.isPresent()) {
@@ -174,12 +174,21 @@ public class MemberServiceImpl implements MemberService{
 
             List<Board> boards = boardRepository.findAllBoardsByMemberId(memberId, Sort.by(Sort.Direction.DESC, "boardNo"));
 
-            for(Board b: boards) {
+            for (Board b : boards) {
                 boardRepository.deleteById(b.getBoardNo());
             }
             memberRepository.deleteById(memberId);
             return true;
         }
         throw new RuntimeException("로그인 중인 사용자를 찾을 수 없음!");
+    }
+
+    @Override
+    public Boolean checkTokenIsValid(String token) {
+        Long memberId = redisService.getValueByKey(token);
+        if(memberId == null) {
+            return false;
+        }
+        return true;
     }
 }

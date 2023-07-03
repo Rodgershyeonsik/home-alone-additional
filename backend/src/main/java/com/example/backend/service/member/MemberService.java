@@ -22,4 +22,5 @@ public interface MemberService {
 
     Boolean removeMember(FlutterUserTokenRequest request);
 
+    Boolean checkTokenIsValid(String token);
 }
