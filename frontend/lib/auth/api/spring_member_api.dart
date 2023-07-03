@@ -148,7 +148,7 @@ class SpringMemberApi {
     } else {
       debugPrint("상태 코드: ${response.statusCode}");
       debugPrint("에러 내용: ${response.body}");
-      throw Exception('requestIfTokenIsValid 통신 실패');
+      return false;
     }
   }
 }

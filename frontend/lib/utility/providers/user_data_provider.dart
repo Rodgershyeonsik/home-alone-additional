@@ -8,7 +8,7 @@ class UserDataProvider extends ChangeNotifier {
   String? _authToken;
   String? _email;
   String? _nickname;
-  late bool _isLogin;
+  bool _isLogin = false;
 
   String? get authToken => _authToken;
   String? get email => _email;
