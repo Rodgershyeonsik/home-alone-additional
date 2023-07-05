@@ -6,13 +6,16 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor
 public class Board {
     @Id
+    @Column(name = "board_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardNo;
 
@@ -38,6 +41,9 @@ public class Board {
 
     @UpdateTimestamp
     private Date updDate;
+
+    @OneToMany(mappedBy = "board")
+    private List<BoardImage> boardImages = new ArrayList<>();
 
     public Board(String title, String writer, String content) {
         this.title = title;
