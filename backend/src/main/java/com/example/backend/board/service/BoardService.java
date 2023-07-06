@@ -4,6 +4,9 @@ import com.example.backend.board.dto.BoardModifyRequest;
 import com.example.backend.board.dto.BoardRegisterRequest;
 import com.example.backend.board.dto.BoardResponse;
 import com.example.backend.board.dto.PagedBoardResponse;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface BoardService {
 

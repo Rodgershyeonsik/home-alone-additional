@@ -1,10 +1,10 @@
 package com.example.backend.board.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -22,16 +22,17 @@ public class BoardImage {
     private String fileOriginName;
 
     @Column
-    private String imgUri;
+    private String filePath;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_no")
     private Board board;
 
-    public BoardImage(String fileName, String fileOriginName, String imgUri, Board board){
+    @Builder
+    public BoardImage(String fileName, String fileOriginName, String filePath, Board board){
         this.fileName = fileName;
         this.fileOriginName = fileOriginName;
-        this.imgUri = imgUri;
+        this.filePath = filePath;
         this.board.getBoardImages().add(this);
         this.board = board;
     }

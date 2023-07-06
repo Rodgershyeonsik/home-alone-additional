@@ -50,4 +50,15 @@ public class Board {
         this.writer = writer;
         this.content = content;
     }
+
+    @Builder
+    public Board(String title, String writer, String content, Member member, BoardCategory category) {
+        this.title = title;
+        this.writer = writer;
+        this.content = content;
+        this.member.getBoards().add(this);
+        this.member = member;
+        this.boardCategory.getBoards().add(this);
+        this.boardCategory = category;
+    }
 }

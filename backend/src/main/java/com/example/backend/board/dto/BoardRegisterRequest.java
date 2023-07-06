@@ -16,5 +16,6 @@ public class BoardRegisterRequest {
     private String content;
     private String boardCategoryName;
 
-    public Board toBoard() { return new Board(title, writer, content); }
+    public Board toBoard() {
+        return new Board(title, writer, content); }
 }

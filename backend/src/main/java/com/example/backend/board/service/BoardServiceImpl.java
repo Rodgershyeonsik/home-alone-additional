@@ -2,6 +2,8 @@ package com.example.backend.board.service;
 
 import com.example.backend.board.entity.Board;
 import com.example.backend.board.entity.BoardCategory;
+import com.example.backend.board.entity.BoardImage;
+import com.example.backend.board.repository.BoardImageRepository;
 import com.example.backend.member.entity.Member;
 import com.example.backend.board.repository.BoardCategoryRepository;
 import com.example.backend.board.repository.BoardRepository;
@@ -12,20 +14,27 @@ import com.example.backend.board.dto.BoardResponse;
 import com.example.backend.board.dto.PagedBoardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional
 public class BoardServiceImpl implements BoardService {
+    @Value("${upload.dir}")
+    private String uploadDir;
 
     @Autowired
     MemberRepository memberRepository;
@@ -35,6 +44,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Autowired
     BoardRepository boardRepository;
+
+    @Autowired
+    BoardImageRepository boardImageRepository;
 
     @Override
     public Boolean register(BoardRegisterRequest boardRegisterRequest) {
@@ -152,4 +164,53 @@ public class BoardServiceImpl implements BoardService {
         return new PagedBoardResponse(totalPages, boards);
     }
 
+    public Boolean register(List<MultipartFile> files, BoardRegisterRequest request) {
+        BoardCategory category;
+        Member member;
+
+        Optional<BoardCategory> maybeCategory =
+                categoryRepository.findByCategoryName(request.getBoardCategoryName());
+
+        if(maybeCategory.isEmpty()) {
+            category = new BoardCategory(request.getBoardCategoryName());
+        } else {
+            category = maybeCategory.get();
+        }
+
+        Optional<Member> maybeMember = memberRepository.findByNickname(request.getWriter());
+
+        if(maybeMember.isPresent()) {
+            member = maybeMember.get();
+        } else {
+            throw new RuntimeException("존재하지 않는 사용자 닉네임");
+        }
+        Board board = Board.builder().
+                title(request.getTitle()).
+                content(request.getContent()).
+                writer(request.getWriter()).
+                category(category).
+                member(member).build();
+        try{
+            for(MultipartFile file : files) {
+                String fileName = file.getName() + UUID.randomUUID();
+                String filePath = uploadDir + "/" + fileName;
+                file.transferTo(new File(filePath));
+                log.info(file.getName() + " 파일 저장 성공!");
+
+                BoardImage image = BoardImage.builder().
+                                    fileName(fileName).
+                                    fileOriginName(file.getName()).
+                                    filePath(filePath).
+                                    board(board).build();
+                boardImageRepository.save(image);
+            }
+        } catch (IOException e) {
+            log.info(e.getMessage());
+            return false;
+        }
+        categoryRepository.save(category);
+        memberRepository.save(member);
+        boardRepository.save(board);
+        return true;
+    }
 }

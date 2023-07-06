@@ -29,3 +29,10 @@ spring:
     multipart:
       maxFileSize: 10MB
       maxRequestSize: 10MB
+
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+upload.dir = /src/main/resources/images
