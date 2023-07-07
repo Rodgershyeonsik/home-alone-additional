@@ -1,13 +1,14 @@
 package com.example.backend.board.entity;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Data
 @NoArgsConstructor
 public class BoardImage {
 
@@ -29,11 +30,9 @@ public class BoardImage {
     private Board board;
 
     @Builder
-    public BoardImage(String fileName, String fileOriginName, String filePath, Board board){
+    public BoardImage(String fileName, String fileOriginName, String filePath){
         this.fileName = fileName;
         this.fileOriginName = fileOriginName;
         this.filePath = filePath;
-        this.board.getBoardImages().add(this);
-        this.board = board;
     }
 }

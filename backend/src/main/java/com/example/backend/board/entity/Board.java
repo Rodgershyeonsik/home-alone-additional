@@ -45,20 +45,15 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<BoardImage> boardImages = new ArrayList<>();
 
+    @Builder
     public Board(String title, String writer, String content) {
         this.title = title;
         this.writer = writer;
         this.content = content;
     }
 
-    @Builder
-    public Board(String title, String writer, String content, Member member, BoardCategory category) {
-        this.title = title;
-        this.writer = writer;
-        this.content = content;
-        this.member.getBoards().add(this);
-        this.member = member;
-        this.boardCategory.getBoards().add(this);
-        this.boardCategory = category;
+    public void setImage(BoardImage image) {
+        this.boardImages.add(image);
+        image.setBoard(this);
     }
 }

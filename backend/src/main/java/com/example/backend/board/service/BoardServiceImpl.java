@@ -33,21 +33,16 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class BoardServiceImpl implements BoardService {
-    @Value("${upload.dir}")
-    private String uploadDir;
+    private final String uploadDir = "D:\\additional\\home-alone-additional\\backend\\src\\main\\resources\\images";
 
     @Autowired
     MemberRepository memberRepository;
-
     @Autowired
     BoardCategoryRepository categoryRepository;
-
     @Autowired
     BoardRepository boardRepository;
-
     @Autowired
     BoardImageRepository boardImageRepository;
-
     @Override
     public Boolean register(BoardRegisterRequest boardRegisterRequest) {
         BoardCategory boardCategory;
@@ -163,8 +158,8 @@ public class BoardServiceImpl implements BoardService {
 
         return new PagedBoardResponse(totalPages, boards);
     }
-
-    public Boolean register(List<MultipartFile> files, BoardRegisterRequest request) {
+    @Override
+    public Boolean registerWithImages(BoardRegisterRequest request, List<MultipartFile> files) {
         BoardCategory category;
         Member member;
 
@@ -184,12 +179,12 @@ public class BoardServiceImpl implements BoardService {
         } else {
             throw new RuntimeException("존재하지 않는 사용자 닉네임");
         }
-        Board board = Board.builder().
-                title(request.getTitle()).
-                content(request.getContent()).
-                writer(request.getWriter()).
-                category(category).
-                member(member).build();
+
+        Board newBoard = request.toBoard();
+        category.setBoard(newBoard);
+        member.setBoard(newBoard);
+
+
         try{
             for(MultipartFile file : files) {
                 String fileName = file.getName() + UUID.randomUUID();
@@ -200,8 +195,8 @@ public class BoardServiceImpl implements BoardService {
                 BoardImage image = BoardImage.builder().
                                     fileName(fileName).
                                     fileOriginName(file.getName()).
-                                    filePath(filePath).
-                                    board(board).build();
+                                    filePath(filePath).build();
+                newBoard.setImage(image);
                 boardImageRepository.save(image);
             }
         } catch (IOException e) {
@@ -210,7 +205,7 @@ public class BoardServiceImpl implements BoardService {
         }
         categoryRepository.save(category);
         memberRepository.save(member);
-        boardRepository.save(board);
+        boardRepository.save(newBoard);
         return true;
     }
 }

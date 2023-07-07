@@ -18,4 +18,6 @@ public interface BoardService {
 
     PagedBoardResponse getAllBoardListWithPage(int pageIndex);
 
+    Boolean registerWithImages(BoardRegisterRequest request, List<MultipartFile> files);
+
 }

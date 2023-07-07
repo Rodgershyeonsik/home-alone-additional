@@ -34,5 +34,3 @@ spring:
     redis:
       repositories:
         enabled: false
-
-upload.dir = /src/main/resources/images
