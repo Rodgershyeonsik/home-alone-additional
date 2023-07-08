@@ -187,14 +187,14 @@ public class BoardServiceImpl implements BoardService {
 
         try{
             for(MultipartFile file : files) {
-                String fileName = file.getName() + UUID.randomUUID();
+                String fileName = UUID.randomUUID() + file.getOriginalFilename();
                 String filePath = uploadDir + "/" + fileName;
                 file.transferTo(new File(filePath));
                 log.info(file.getName() + " 파일 저장 성공!");
 
                 BoardImage image = BoardImage.builder().
                                     fileName(fileName).
-                                    fileOriginName(file.getName()).
+                                    fileOriginName(file.getOriginalFilename()).
                                     filePath(filePath).build();
                 newBoard.setImage(image);
                 boardImageRepository.save(image);
