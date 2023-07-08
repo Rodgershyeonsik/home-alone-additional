@@ -7,7 +7,11 @@ import com.example.backend.board.dto.BoardResponse;
 import com.example.backend.board.dto.PagedBoardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,7 +31,7 @@ public class BoardController {
     public PagedBoardResponse getCategoryBoardListWithPage(
             @PathVariable("categoryName") String categoryName,
             @PathVariable("pageIndex") int pageIndex) {
-                log.info("specificBoardList()");
+        log.info("specificBoardList()");
 
         return service.getCategoryBoardListWithPage(categoryName, pageIndex);
     }
@@ -58,5 +62,14 @@ public class BoardController {
         log.info("boardModify()");
 
         return service.modify(boardNo, boardModifyRequest);
+    }
+
+    @PostMapping(value = "/register-with-image", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public Boolean boardRegisterWithImage(
+            @RequestPart("request") BoardRegisterRequest request,
+            @RequestPart("file") List<MultipartFile> files) {
+                log.info("boardRegisterWithImage()");
+                return service.registerWithImages(request, files);
+
     }
 }
