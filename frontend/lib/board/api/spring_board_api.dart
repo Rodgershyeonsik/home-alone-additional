@@ -63,23 +63,28 @@ class SpringBoardApi{
     }
   }
 
-  Future<PagedBoardRes> requestAllBoardsWithPage(int pageIndex) async {
+  Future<PagedBoardRes?> requestAllBoardsWithPage(int pageIndex) async {
 
-    var response = await http.get(Uri.http(HttpUri.home, '/board/all-boards-with-page/$pageIndex'));
+    try {
+      var response = await http.get(Uri.http(HttpUri.home, '/board/all-boards-with-page/$pageIndex'));
 
-    if (response.statusCode == 200) {
-      debugPrint("requestAllBoardsWithPage: " + utf8.decode(response.bodyBytes));
-      var jsonPagedBoardRes = jsonDecode(utf8.decode(response.bodyBytes));
+      if (response.statusCode == 200) {
+        debugPrint("requestAllBoardsWithPage: " + utf8.decode(response.bodyBytes));
+        var jsonPagedBoardRes = jsonDecode(utf8.decode(response.bodyBytes));
 
-      var totalPages = jsonPagedBoardRes["totalPages"] as int;
-      var jsonBoards = jsonPagedBoardRes["boards"] as List;
+        var totalPages = jsonPagedBoardRes["totalPages"] as int;
+        var jsonBoards = jsonPagedBoardRes["boards"] as List;
 
-      List<Board> boards = jsonBoards.map((json)=>Board.fromJson(json)).toList();
+        List<Board> boards = jsonBoards.map((json)=>Board.fromJson(json)).toList();
 
-      return PagedBoardRes(totalPages: totalPages, pagedBoards: boards);
+        return PagedBoardRes(totalPages: totalPages, pagedBoards: boards);
 
-    } else {
-      throw Exception("board list 통신 실패");
+      } else {
+        throw Exception("board list 통신 실패");
+      }
+    } on Exception catch (e) {
+      print("http 요청에 에러가 발생했다! \n$e");
+      return null;
     }
   }
 

@@ -28,14 +28,18 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.grey,
                 ),
               )
-                  : provider.boards.isNotEmpty
-                      ? BoardListView(
+                  : !provider.errorOccurred ?
+                        provider.boards.isNotEmpty ?
+                          BoardListView(
                           boards: provider.boards,
                           listTitle: "전체 게시글 목록",
                           category: BoardCategory.all,)
                       : const Center(
                         child: Text("게시물이 존재하지 않습니다.")
-            );
+                        )
+            : const Center(
+                child: Text("통신이 원활하지 않습니다.\n앱을 재실행해주세요.")
+              );
           },
         ),
       drawer: const CustomDrawer(),

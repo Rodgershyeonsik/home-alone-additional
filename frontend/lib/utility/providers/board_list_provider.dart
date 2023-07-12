@@ -12,15 +12,23 @@ class BoardListProvider extends ChangeNotifier{
 
   bool get isLoading => _isLoading;
   List<Board> get boards => _boards;
+  bool errorOccurred = false;
 
   Future<void> loadEveryBoards(int pageIndex) async {
     _isLoading = true;
     var pagedBoardsRes = await SpringBoardApi().requestAllBoardsWithPage(pageIndex);
+    if(pagedBoardsRes == null) {
+      errorOccurred = true;
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
     if(pageIndex == 0) {
       _boards.clear();
     }
     lastIndex = pagedBoardsRes.totalPages - 1;
     _boards.addAll(pagedBoardsRes.pagedBoards);
+    errorOccurred = false;
     _isLoading = false;
     notifyListeners();
   }
