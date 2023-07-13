@@ -7,6 +7,7 @@ import 'package:frontend/user/screens/my_page_screen.dart';
 import 'package:frontend/auth/screens/sign_in_screen.dart';
 import 'package:frontend/auth/screens/sign_up_complete_screen.dart';
 import 'package:frontend/auth/screens/sign_up_screen.dart';
+import 'package:frontend/utility/providers/board_register_provider.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:frontend/utility/providers/board_list_provider.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (BuildContext context) => UserDataProvider()),
           ChangeNotifierProvider(create: (BuildContext context) => BoardListProvider()),
           ChangeNotifierProvider(create: (BuildContext context) => CategoryProvider()),
+          ChangeNotifierProvider(create: (BuildContext context)=> BoardRegisterProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

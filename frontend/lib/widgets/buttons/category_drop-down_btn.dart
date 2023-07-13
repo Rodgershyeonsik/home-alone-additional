@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/utility/providers/board_register_provider.dart';
 import 'package:frontend/utility/providers/category_provider.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class _CategoryDropDownBtnState extends State<CategoryDropDownBtn> {
   @override
   Widget build(BuildContext context) {
     _categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+    var boardRegisterProvider = Provider.of<BoardRegisterProvider>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -46,6 +48,7 @@ class _CategoryDropDownBtnState extends State<CategoryDropDownBtn> {
             debugPrint(dropdownValue);
           });
           _categoryProvider.categorySelected(dropdownValue);
+          boardRegisterProvider.setCategory(dropdownValue);
         },
         items: categoryList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(

@@ -1,14 +1,12 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/board/api/spring_board_api.dart';
-import 'package:frontend/utility/long_button_container.dart';
-import 'package:frontend/utility/providers/category_provider.dart';
+import 'package:frontend/utility/providers/board_register_provider.dart';
 import 'package:frontend/utility/providers/user_data_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../utility/size.dart';
 import '../../widgets/buttons/category_drop-down_btn.dart';
-import '../../widgets/result_alert_dialog.dart';
 import '../../widgets/text_form_fields/text_form_field_for_board.dart';
 
 class BoardRegisterForm extends StatefulWidget {
@@ -20,23 +18,19 @@ class BoardRegisterForm extends StatefulWidget {
 
 class _BoardRegisterFormState extends State<BoardRegisterForm> {
 
-  late TextEditingController titleController = TextEditingController();
-  late TextEditingController contentController = TextEditingController();
-
-  late String title;
-  late String writer;
-  late String content;
-  late String boardCategoryName;
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController contentController = TextEditingController();
+  late BoardRegisterProvider boardRegisterProvider;
 
   @override
   void initState() {
+    boardRegisterProvider = Provider.of<BoardRegisterProvider>(context, listen: false);
     titleController.addListener(() {
-      title = titleController.text;
+      boardRegisterProvider.setTitle(titleController.text);
     });
     contentController.addListener(() {
-      content = contentController.text;
+      boardRegisterProvider.setContent(contentController.text);
     });
-
     super.initState();
   }
 
@@ -44,14 +38,14 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
   void dispose() {
     titleController.dispose();
     contentController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    writer = Provider.of<UserDataProvider>(context, listen: false).nickname!;
+    var writer = Provider.of<UserDataProvider>(context, listen: false).nickname!;
+    boardRegisterProvider.setWriter(writer);
 
     return Form(
         key: _formKey,
@@ -59,40 +53,13 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
           children: [
             const CategoryDropDownBtn(),
             TextFormFieldForBoard(use:"제목", maxLines:1, controller: titleController),
-            SizedBox(height: small_gap,),
+            const Divider(color: Colors.grey,),
+            const SizedBox(height: small_gap,),
             TextFormFieldForBoard(use:"내용", maxLines:20, controller: contentController),
-            SizedBox(height: small_gap,),
-            Consumer<CategoryProvider>(
-              builder: (context, category, child) {
-                return LongButtonContainer(
-                    textButton: TextButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          boardCategoryName = category.category;
-                          SpringBoardApi().requestBoardRegister(BoardRegisterRequest(title, writer, content, boardCategoryName));
-                          category.setDefaultCategory();
-                          moveToList(boardCategoryName);
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  const ResultAlertDialog(alertMsg: "제목과 내용을 모두 작성해주세요.")
-                          );
-                        }
-                      },
-                      child: Text("게시글 등록하기",
-                      style: TextStyle(
-                        color: Colors.white
-                      ),)
-                  ),
-                );
-              }
-            )
           ],
         )
       );
   }
-
   void moveToList(String category) {
     if(category == "자유") {
       Navigator.pushNamed(context, "/board-list-free");
