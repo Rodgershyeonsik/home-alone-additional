@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:frontend/utility/providers/board_list_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../refresh_fab.dart';
+import '../../widgets/refresh_fab.dart';
 import '../api/board.dart';
 import '../screens/board_detail_screen.dart';
 import '../../utility/custom_enums.dart';
