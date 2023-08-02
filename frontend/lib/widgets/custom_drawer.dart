@@ -6,22 +6,8 @@ import '../board/screens/board_register_screen.dart';
 import '../utility/providers/user_data_provider.dart';
 import 'result_alert_dialog.dart';
 
-class CustomDrawer extends StatefulWidget {
+class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);
-
-  @override
-  State<CustomDrawer> createState() => _CustomDrawerState();
-}
-
-class _CustomDrawerState extends State<CustomDrawer> {
-  late UserDataProvider userDataProvider;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
-  //   userDataProvider.authToken != null ? isLogin = true : isLogin = false;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +21,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             decoration: BoxDecoration(
                               color: MainColor.mainColor
                                 ),
-                              accountName: Text(provider.nickname!),
-                              accountEmail: Text(provider.email!))
+                              accountName: Text(provider.nickname ?? ''),
+                              accountEmail: Text(provider.email ?? ''))
                           : DrawerHeader(
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
