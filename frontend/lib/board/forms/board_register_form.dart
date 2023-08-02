@@ -60,13 +60,4 @@ class _BoardRegisterFormState extends State<BoardRegisterForm> {
         )
       );
   }
-  void moveToList(String category) {
-    if(category == "자유") {
-      Navigator.pushNamed(context, "/board-list-free");
-    } else if(category == "질문") {
-      Navigator.pushNamed(context, "/board-list-ask");
-    } else if(category == "1인분") {
-      Navigator.pushNamed(context, "/board-list-recipe");
-    }
-  }
 }

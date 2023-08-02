@@ -26,6 +26,14 @@ class BoardRegisterProvider extends ChangeNotifier {
     _category = category;
   }
 
+  void setDefaultValue() {
+    _title = "";
+    _content = "";
+    _isRegistered = false;
+    _category = "자유";
+  }
+  bool get isRegistered => _isRegistered;
+
   bool checkValidate() {
     if(_title.isNotEmpty && _content.isNotEmpty) {
       return true;

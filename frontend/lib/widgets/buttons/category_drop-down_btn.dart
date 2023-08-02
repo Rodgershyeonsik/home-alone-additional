@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/utility/providers/board_register_provider.dart';
-import 'package:frontend/utility/providers/category_provider.dart';
 import 'package:frontend/utility/main_color.dart';
 import 'package:provider/provider.dart';
 
@@ -15,11 +14,9 @@ class CategoryDropDownBtn extends StatefulWidget {
 class _CategoryDropDownBtnState extends State<CategoryDropDownBtn> {
   List<String> categoryList = <String>['자유', '질문', '1인분'];
   late String dropdownValue = categoryList[0];
-  late CategoryProvider _categoryProvider;
 
   @override
   Widget build(BuildContext context) {
-    _categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     var boardRegisterProvider = Provider.of<BoardRegisterProvider>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +44,6 @@ class _CategoryDropDownBtnState extends State<CategoryDropDownBtn> {
             dropdownValue = value!;
             debugPrint(dropdownValue);
           });
-          _categoryProvider.categorySelected(dropdownValue);
           boardRegisterProvider.setCategory(dropdownValue);
         },
         items: categoryList.map<DropdownMenuItem<String>>((String value) {
